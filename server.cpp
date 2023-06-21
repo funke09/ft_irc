@@ -53,6 +53,7 @@ int Server::listen_socket()
         close(this->socket_fd);
         return -1;
     }
+    std::cout << "Server started and listening on port " << this->port << std::endl;
     return (0);
 }
 

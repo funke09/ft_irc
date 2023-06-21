@@ -87,7 +87,6 @@ int main(int ac, char **av)
         return -1;
     if(server.listen_socket() == -1)
         return -1;
-    if(server.accept_socket() == -1)
-        return -1;
-    std::cout << "Server started and listening on port " << atoi(av[1]) << std::endl;
+    // if(server.accept_socket() == -1)
+    //     return -1;
 }
