@@ -141,6 +141,7 @@ int main(int argc, char** argv) {
     std::cout << "Server started and listening on port " << port << std::endl;
 
     // Main server loop
+    /* This is the main server loop that listens for incoming connections and handles client activity. */
     while (true) {
         fd_set readSet;
         FD_ZERO(&readSet);
