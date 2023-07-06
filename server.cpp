@@ -57,65 +57,151 @@ int Server::listen_socket()
 }
 
 
-int Server::accept_socket()
-{
-    fds.push_back((struct pollfd){.fd = socket_fd, .events = POLLIN, .revents = 0});
+// int Server::accept_socket()
+// {
+//     fds.push_back((struct pollfd){.fd = socket_fd, .events = POLLIN, .revents = 0});
 
-    while (1)
+//     while (1)
+//     {
+//         poll(fds.data(), fds.size(), -1);
+//         for(size_t i = 0; i < fds.size(); i++)
+//         {
+//             if(fds[i].revents & POLLIN)
+//             {
+//                 if(fds[i].fd == socket_fd)
+//                 {
+
+//                 }
+//                     // struct sockaddr_in clientAddress;
+//                     // socklen_t clientAddressLength = sizeof(clientAddress);
+//                     // int client_fd;
+//                     // if((client_fd = accept(socket_fd, (struct sockaddr*)&clientAddress, &clientAddressLength)) == -1)
+//                     // {
+//                     //     std::cout << "Failed to accept connection" << std::endl;
+//                     //     close(socket_fd);
+//                     //     return -1;
+//                     // }
+//                     // fds.push_back((struct pollfd){.fd = client_fd, .events = POLLIN, .revents = 0});
+//                     // std::cout << "Client connected" << std::endl;
+//                 else
+//                 {
+//                     char buffer[1024];
+//                     memset(buffer, 0, 1024);
+//                     int bytes = recv(fds[i].fd, buffer, 1024, 0);
+//                     if(bytes <= 0)
+//                     {
+//                         std::cout << "Client disconnected" << std::endl;
+//                         close(fds[i].fd);
+//                         fds.erase(fds.begin() + i);
+//                     }
+//                     else
+//                     {
+//                         std::cout << "Received " << bytes << " bytes" << std::endl;
+//                         std::cout << buffer << std::endl;
+//                     }
+//                 }
+//             }
+//         }
+//     }
+    
+//     // int client_fd;
+//     // socklen_t clientAddressLength = sizeof(clientAddress);
+
+//     // if((client_fd = accept(this->socket_fd, (struct sockaddr*)&clientAddress, &clientAddressLength)) == -1)
+//     // {
+//     //     std::cout << "Failed to accept connection" << std::endl;
+//     //     close(this->socket_fd);
+//     //     return -1;
+//     // }
+//     // std::cout << "Client connected" << std::endl;
+//     // // handle_client(client_fd);
+
+//     // return (client_fd);
+
+
+// }
+
+void Server::accept_socket(void)
+{
+    int fds_num;
+    int counter;
+    int socket;
+    size_t i;
+    std::vector<std::string> clients;
+
+    i = sizeof(serverAddress);
+    memset(fds, 0, MAX_CLIENTS * sizeof(struct pollfd));
+    fds[0].fd = this->socket_fd;
+    fds[0].events = POLLIN;
+    fds_num = 1;
+    counter = 0;
+
+    while(1)
     {
-        poll(fds.data(), fds.size(), -1);
-        for(size_t i = 0; i < fds.size(); i++)
+        if(poll(fds, fds_num, -1) == -1)
         {
-            if(fds[i].revents & POLLIN)
+            std::cout << "Failed to poll" << std::endl;
+            close(this->socket_fd);
+            return;
+        }
+        for(int j = 0; j < fds_num; j++)
+        {
+            if(fds[j].revents & POLLIN)
             {
-                if(fds[i].fd == socket_fd)
+                if(fds[j].fd == this->socket_fd)
                 {
-                    // struct sockaddr_in clientAddress;
-                    // socklen_t clientAddressLength = sizeof(clientAddress);
-                    // int client_fd;
-                    // if((client_fd = accept(socket_fd, (struct sockaddr*)&clientAddress, &clientAddressLength)) == -1)
-                    // {
-                    //     std::cout << "Failed to accept connection" << std::endl;
-                    //     close(socket_fd);
-                    //     return -1;
-                    // }
-                    // fds.push_back((struct pollfd){.fd = client_fd, .events = POLLIN, .revents = 0});
-                    // std::cout << "Client connected" << std::endl;
+                    if((socket = accept(this->socket_fd, (struct sockaddr*)&serverAddress, (socklen_t*)&i)) == -1)
+                    {
+                        std::cout << "Failed to accept connection" << std::endl;
+                        close(this->socket_fd);
+                        return;
+                    }
+                    fds[fds_num].fd = socket;
+                    fds[fds_num].events = POLLIN;
+                    fds_num++;
+                    std::cout << "Client connected" << std::endl;
                 }
                 else
                 {
                     char buffer[1024];
                     memset(buffer, 0, 1024);
-                    int bytes = recv(fds[i].fd, buffer, 1024, 0);
+                    int bytes = recv(fds[j].fd, buffer, 1024, 0);
                     if(bytes <= 0)
                     {
                         std::cout << "Client disconnected" << std::endl;
-                        close(fds[i].fd);
-                        fds.erase(fds.begin() + i);
+                        close(fds[j].fd);
+                        fds[j].fd = -1;
+                        counter++;
                     }
                     else
                     {
                         std::cout << "Received " << bytes << " bytes" << std::endl;
                         std::cout << buffer << std::endl;
+                        if(counter == 0)
+                        {
+                            clients.push_back(buffer);
+                            counter++;
+                        }
+                        else
+                        {
+                            for(size_t k = 0; k < clients.size(); k++)
+                            {
+                                if(clients[k] == buffer)
+                                {
+                                    std::cout << "Client already exists" << std::endl;
+                                    break;
+                                }
+                                else
+                                {
+                                    clients.push_back(buffer);
+                                    std::cout << "Client added" << std::endl;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     }
-    
-    // int client_fd;
-    // socklen_t clientAddressLength = sizeof(clientAddress);
-
-    // if((client_fd = accept(this->socket_fd, (struct sockaddr*)&clientAddress, &clientAddressLength)) == -1)
-    // {
-    //     std::cout << "Failed to accept connection" << std::endl;
-    //     close(this->socket_fd);
-    //     return -1;
-    // }
-    // std::cout << "Client connected" << std::endl;
-    // // handle_client(client_fd);
-
-    // return (client_fd);
-
-
 }

@@ -10,6 +10,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <poll.h>
+#include <sys/poll.h>
 
 #define MAX_CLIENTS 100
 
@@ -21,8 +22,8 @@ class Server
     int socket_fd;
     std::string password;
     struct sockaddr_in serverAddress;
-    struct sockaddr_in clientAddress;
-    std::vector<struct pollfd> fds;
+    // struct sockaddr_in clientAddress;
+    struct pollfd fds[MAX_CLIENTS];
 
 
     public:
@@ -31,7 +32,9 @@ class Server
     int create_socket();
     int bind_socket();
     int listen_socket();
-    int accept_socket();
+    void accept_socket();
+
+
 };
 
 void handle_client(int client_fd);
