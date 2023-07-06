@@ -30,7 +30,6 @@ int Server::create_socket()
 
 int Server::bind_socket()
 {
-    struct sockaddr_in serverAddress;
     memset(&serverAddress, 0, sizeof(serverAddress));
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(this->port);
@@ -57,18 +56,66 @@ int Server::listen_socket()
     return (0);
 }
 
+
 int Server::accept_socket()
 {
-    int client_fd;
-    struct sockaddr_in clientAddress;
-    socklen_t clientAddressLength = sizeof(clientAddress);
+    fds.push_back((struct pollfd){.fd = socket_fd, .events = POLLIN, .revents = 0});
 
-    if((client_fd = accept(this->socket_fd, (struct sockaddr*)&clientAddress, &clientAddressLength)) == -1)
+    while (1)
     {
-        std::cout << "Failed to accept connection" << std::endl;
-        close(this->socket_fd);
-        return -1;
+        poll(fds.data(), fds.size(), -1);
+        for(size_t i = 0; i < fds.size(); i++)
+        {
+            if(fds[i].revents & POLLIN)
+            {
+                if(fds[i].fd == socket_fd)
+                {
+                    // struct sockaddr_in clientAddress;
+                    // socklen_t clientAddressLength = sizeof(clientAddress);
+                    // int client_fd;
+                    // if((client_fd = accept(socket_fd, (struct sockaddr*)&clientAddress, &clientAddressLength)) == -1)
+                    // {
+                    //     std::cout << "Failed to accept connection" << std::endl;
+                    //     close(socket_fd);
+                    //     return -1;
+                    // }
+                    // fds.push_back((struct pollfd){.fd = client_fd, .events = POLLIN, .revents = 0});
+                    // std::cout << "Client connected" << std::endl;
+                }
+                else
+                {
+                    char buffer[1024];
+                    memset(buffer, 0, 1024);
+                    int bytes = recv(fds[i].fd, buffer, 1024, 0);
+                    if(bytes <= 0)
+                    {
+                        std::cout << "Client disconnected" << std::endl;
+                        close(fds[i].fd);
+                        fds.erase(fds.begin() + i);
+                    }
+                    else
+                    {
+                        std::cout << "Received " << bytes << " bytes" << std::endl;
+                        std::cout << buffer << std::endl;
+                    }
+                }
+            }
+        }
     }
-    return (client_fd);
-}
+    
+    // int client_fd;
+    // socklen_t clientAddressLength = sizeof(clientAddress);
 
+    // if((client_fd = accept(this->socket_fd, (struct sockaddr*)&clientAddress, &clientAddressLength)) == -1)
+    // {
+    //     std::cout << "Failed to accept connection" << std::endl;
+    //     close(this->socket_fd);
+    //     return -1;
+    // }
+    // std::cout << "Client connected" << std::endl;
+    // // handle_client(client_fd);
+
+    // return (client_fd);
+
+
+}

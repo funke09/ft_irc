@@ -66,27 +66,17 @@ int bind_socket(int port, int socket_fd)
 
 int main(int ac, char **av)
 {
-    // int socket_fd;
 
     if(parss_args(ac, av) == -1)
         return -1;
-    // if((socket_fd = create_socket()) == -1)
-    //     return -1;
-    // if(bind_socket(atoi(av[1]), socket_fd) == -1)
-    //     return -1;
-    // if(listen(socket_fd, MAX_CLIENTS) == -1)
-    // {
-    //     std::cout << "Failed to listen for connections" << std::endl;
-    //     close(socket_fd);
-    //     return -1;
-    // }
     Server server(atoi(av[1]), av[2]);
     if(server.create_socket() == -1)
         return -1;
+    // ioctl();
     if(server.bind_socket() == -1)
         return -1;
     if(server.listen_socket() == -1)
         return -1;
-    // if(server.accept_socket() == -1)
-    //     return -1;
+    if(server.accept_socket() == -1)
+        return -1;
 }
