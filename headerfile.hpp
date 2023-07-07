@@ -11,6 +11,7 @@
 #include <arpa/inet.h>
 #include <poll.h>
 #include <sys/poll.h>
+#include <string.h>
 
 #define MAX_CLIENTS 100
 

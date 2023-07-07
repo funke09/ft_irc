@@ -156,10 +156,38 @@ void Server::accept_socket(void)
                         close(this->socket_fd);
                         return;
                     }
+                    if(fds_num == MAX_CLIENTS)
+                    {
+                        std::cout << "Maximum number of clients reached" << std::endl;
+                        close(socket);
+                    }
                     fds[fds_num].fd = socket;
                     fds[fds_num].events = POLLIN;
                     fds_num++;
                     std::cout << "Client connected" << std::endl;
+                    char buffer[1024];
+                    memset(buffer, 0, 1024);
+                    int bytes = recv(fds[fds_num- 1].fd, buffer, 1024, 0);
+                    if(bytes <= 0)
+                    {
+                        std::cout << "Client disconnected" << std::endl;
+                        close(fds[fds_num- 1].fd);
+                        fds[fds_num- 1].fd = -1;
+                        counter++;
+                    }
+                    else
+                    {
+                        std::cout << "Received " << bytes << " bytes" << std::endl;
+                        std::cout << "from client: " << buffer << std::endl;
+                        if(strncmp(buffer, "PASS ", 5) == 0)
+                        {
+                            std::string pass =  std::string(buffer).substr(5);
+                            if (pass != password)
+                                close(fds[fds_num- 1].fd);
+                            std::cout << "Client pass: " << pass << pass.length() << std::endl;
+                            std::cout << "pass: " << password<< password.length() << std::endl;
+                        }
+                    }
                 }
                 else
                 {
@@ -176,29 +204,39 @@ void Server::accept_socket(void)
                     else
                     {
                         std::cout << "Received " << bytes << " bytes" << std::endl;
-                        std::cout << buffer << std::endl;
-                        if(counter == 0)
-                        {
-                            clients.push_back(buffer);
-                            counter++;
-                        }
-                        else
-                        {
-                            for(size_t k = 0; k < clients.size(); k++)
-                            {
-                                if(clients[k] == buffer)
-                                {
-                                    std::cout << "Client already exists" << std::endl;
-                                    break;
-                                }
-                                else
-                                {
-                                    clients.push_back(buffer);
-                                    std::cout << "Client added" << std::endl;
-                                    break;
-                                }
-                            }
-                        }
+                        std::cout << "from client: " << buffer << std::endl;
+
+
+                        // std::string message = "Hello from server";
+                        // if(send(fds[j].fd, message.c_str(), message.size(), 0) == -1)
+                        // {
+                        //     std::cout << "Failed to send message" << std::endl;
+                        //     close(this->socket_fd);
+                        //     return;
+                        // }
+                        
+                        // if(counter == 0)
+                        // {
+                        //     clients.push_back(buffer);
+                        //     counter++;
+                        // }
+                        // else
+                        // {
+                        //     for(size_t k = 0; k < clients.size(); k++)
+                        //     {
+                        //         if(clients[k] == buffer)
+                        //         {
+                        //             std::cout << "Client already exists" << std::endl;
+                        //             break;
+                        //         }
+                        //         else
+                        //         {
+                        //             clients.push_back(buffer);
+                        //             std::cout << "Client added" << std::endl;
+                        //             break;
+                        //         }
+                        //     }
+                        // }
                     }
                 }
             }
