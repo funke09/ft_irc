@@ -12,6 +12,7 @@
 #include <poll.h>
 #include <sys/poll.h>
 #include <string.h>
+#include <map>
 
 #define MAX_CLIENTS 100
 
@@ -24,6 +25,7 @@ class Server
     std::string password;
     struct sockaddr_in serverAddress;
     // struct sockaddr_in clientAddress;
+    std::map<int, std::string> clients;
     struct pollfd fds[MAX_CLIENTS];
 
 
@@ -34,6 +36,12 @@ class Server
     int bind_socket();
     int listen_socket();
     void accept_socket();
+
+    int get_port();
+    int get_socket_fd();
+    std::string get_password();
+
+
 
 
 };
