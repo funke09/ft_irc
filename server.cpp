@@ -4,7 +4,7 @@ Server::Server(int port, std::string password)
 {
     this->port = port;
     this->password = password;
-    std::cout << "from here "<<this->password << std::endl;
+    // std::cout << "from here "<<this->password << std::endl;
 }
 
 int Server::get_port()
@@ -79,12 +79,12 @@ void removeNewline(std::string& str) {
     }
 }
 
-
 void Server::accept_socket(void) {
     int fds_num;
     int socket;
     size_t i;
     std::map<int, std::string> clientMap; // Map to store client information
+    std::vector<std::string> Channels;
 
     i = sizeof(serverAddress);
     memset(fds, 0, MAX_CLIENTS * sizeof(struct pollfd));
@@ -144,8 +144,8 @@ void Server::accept_socket(void) {
                                 std::string pass = std::string(buffer).substr(5);
                                 removeNewline(pass);
                             
-                                std::cout << "Client pass: " << pass << "len :" << pass.length() << std::endl;
-                                std::cout << "MY password: " << this->get_password() << "len :"<< password.length() << std::endl;
+                                // std::cout << "Client pass: " << pass << "len :" << pass.length() << std::endl;
+                                // std::cout << "MY password: " << this->get_password() << "len :"<< password.length() << std::endl;
                                 if (pass != password) {
                                     std::cout << "Incorrect password. Closing connection." << std::endl;
                                     close(fds[j].fd);
@@ -167,7 +167,7 @@ void Server::accept_socket(void) {
 
                             // Parse client information (username, nickname, password)
                             // Assuming the format: "USERNAME <username> NICKNAME <nickname> PASSWORD <password>"
-                            std::string username, nickname, password;
+                            std::string username, nickname, password, channel;
                             size_t pos;
 
                             pos = clientInfo.find("USERNAME ");
@@ -202,12 +202,36 @@ void Server::accept_socket(void) {
                                 close(fds[j].fd);
                                 clientMap.erase(fds[j].fd);
                             }
+                            
+                            pos = clientInfo.find("#", pos);
+                            if (pos != std::string::npos) {
+                                pos += 1;
+                                for (unsigned long i = 0; i < Channels.size(); i++)
+                                {
+                                    if (Channels[i] == clientInfo.substr(pos)) {
+                                        std::cout << "Channel already exists" << std::endl;
+                                        break;
+                                    }
+                                    else {
+                                        std::cout << "Channel created" << std::endl;
+                                        Channels.push_back(clientInfo.substr(pos));
+                                        channel = clientInfo.substr(pos);
+                                        break;
+                                    }
+                                }
+                                for (unsigned long i = 0; i < Channels.size(); i++)
+                                {
+                                    std::cout << Channels[i] << std::endl;
+                                }
+                                
+                            }
                             else {
                                 // Store client information in the map
-                                clientMap[fds[j].fd] = "Username: " + username + ", Nickname: " + nickname + ", Password: " + password;
+                                clientMap[fds[j].fd] = "Username: " + username + ", Nickname: " + nickname + ", Password: " + password + ", Channel: " + channel;
 
                                 // Perform further actions with the client information
                                 std::cout << "Client information: " << clientMap[fds[j].fd] << std::endl;
+
 
                             }
                         }
