@@ -34,12 +34,12 @@ class Server
     int flag;
     std::string password;
     struct sockaddr_in serverAddress;
-    // struct sockaddr_in clientAddress;
     std::map<int, Message> clientMap;
-    // std::map<int, std::string> clients;
     struct pollfd fds[MAX_CLIENTS];
-    public:
-    std::vector<client> clients;
+    
+    // struct sockaddr_in clientAddress;
+    // std::map<int, std::string> clients;
+    // std::vector<client> clients;
 
     public:
     Server(int port, std::string password);

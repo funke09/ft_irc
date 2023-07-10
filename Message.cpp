@@ -101,8 +101,8 @@ std::string Message::parss_password(std::string password, std::string buffer)
             return ("Not authenticated");
         }
     }
-    else
-        return (":localhost 462 " /*+ client.get_nick()*/   " PASS :You may not reregister\r\n");
+
+    return (":localhost 462 " /*+ client.get_nick()*/   " PASS :You may not reregister\r\n");
 
     // size_t pos = message.find(' ');
     // command = message.substr(0, pos);
@@ -128,7 +128,6 @@ std::string Message::parss_password(std::string password, std::string buffer)
     //     }
     // }
     // // check_command(message, command, password, params.size());
-    // return (0);
 }
 
 // void Message::check_command(std::string message, std::string command, std::string password, int size)

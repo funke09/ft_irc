@@ -15,7 +15,7 @@
 #include <map>
 
 #include "client.hpp"
-// class client;
+class client;
 
 class Message
 {
@@ -28,7 +28,7 @@ class Message
     std::string trailing;
     bool is_authenticated;
 
-    // client *client;
+    client *client;
     std::string C_password;
 
 

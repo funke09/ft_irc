@@ -1,8 +1,8 @@
 NAME = ircserv
 
-SRC = parssing.cpp server.cpp Message.cpp
+SRC = parssing.cpp server.cpp Message.cpp client.cpp
 
-HEADER = headerfile.hpp Message.hpp
+HEADER = headerfile.hpp Message.hpp client.hpp
 
 OBJ = $(SRC:.cpp=.o)
 
