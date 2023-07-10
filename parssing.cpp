@@ -28,41 +28,6 @@ int parss_args(int ac, char **av)
     return 0;
 }
 
-int create_socket()
-{
-    int socket_fd;
-
-    if((socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
-    {
-        std::cout << "Failed to create socket" << std::endl;
-        return -1;
-    }
-    int reuse = 1;
-    if(setsockopt(socket_fd, SOL_SOCKET, SO_REUSEADDR, (const char*)&reuse, sizeof(reuse)) == -1)
-    {
-        std::cout << "Failed to set socket options" << std::endl;
-        close(socket_fd);
-        return -1;
-    }
-    return (socket_fd);
-}
-
-int bind_socket(int port, int socket_fd)
-{
-    struct sockaddr_in serverAddress;
-    memset(&serverAddress, 0, sizeof(serverAddress));
-    serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(port);
-    serverAddress.sin_addr.s_addr = INADDR_ANY;
-
-    if(bind(socket_fd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1)
-    {
-        std::cout << "Failed to bind socket" << std::endl;
-        close(socket_fd);
-        return -1;
-    } 
-    return (0);
-}
 
 int main(int ac, char **av)
 {

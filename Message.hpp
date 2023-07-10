@@ -14,6 +14,9 @@
 #include <string.h>
 #include <map>
 
+#include "client.hpp"
+// class client;
+
 class Message
 {
     private:
@@ -23,14 +26,20 @@ class Message
     std::string prefix;
     std::vector<std::string> params;
     std::string trailing;
+    bool is_authenticated;
+
+    // client *client;
+    std::string C_password;
 
 
     public:
+    Message();
     Message(int socket);
     ~Message();
     std::string get_message();
     std::string get_command();
     std::string get_prefix();
+    int get_socket();
     std::vector<std::string> get_params();
     std::string get_trailing();
     void set_message(std::string message);
@@ -38,14 +47,15 @@ class Message
     void set_prefix(std::string prefix);
     void set_params(std::vector<std::string> params);
     void set_trailing(std::string trailing);
-    int parse_message(std::string password, std::string message);
-    void print_message();
-    void print_params();
-    void print_prefix();
-    void print_command();
-    void print_trailing();
-    void print_all();
-
+    std::string parss_password(std::string password, std::string message);
+    // void print_message();
+    // void print_params();
+    // void print_prefix();
+    // void print_command();
+    // void print_trailing();
+    // void print_all();
+    void check_command(std::string message, std::string command, std::string password, int size);
+    void handleError(int error);
 };
 
 #endif

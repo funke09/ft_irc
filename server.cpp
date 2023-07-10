@@ -79,6 +79,16 @@ void removeNewline(std::string& str) {
     }
 }
 
+// int Server::existe(int fd)
+// {
+ 
+//     std::vector<client>::iterator it;
+//     for(it = clients.begin(); it != clients.end(); it++)
+//     {
+       
+//     }
+// }
+
 
 void Server::accept_socket(void) {
     int fds_num;
@@ -126,7 +136,7 @@ void Server::accept_socket(void) {
                     }
                 }
                 else {
-                    int clientfd = fds[j].fd;
+                    // int clientfd = fds[j].fd;
                     flag = i - 1;
                     char buffer[1024];
                     memset(buffer, 0, 1024);
@@ -147,7 +157,16 @@ void Server::accept_socket(void) {
                         fds[j].fd = -1;
                         std::cout << "Client disconnected" << std::endl;
                     }
-                    handel_message(buffer, clientfd, &fds_num, &clientMap[flag]);
+                    std::cout << "fd "  << fds[j].fd << std::endl;
+                    // if (!existe(fds[j].fd))
+                    // {
+                        handel_message(buffer, &clientMap[flag]);
+                    // }
+                    // else
+                    // {
+                    //     // handel join 
+                    // }
+                
                     // else 
                     // {
                     //     std::cout << "Received " << bytes << " bytes" << std::endl;
@@ -258,9 +277,10 @@ void Server::accept_socket(void) {
 }
 
 
-void Server::handel_message(char *buff, int client_fd, int *fds, Message *user)
+void Server::handel_message(char *buff, Message *user)
 {
-    int checker = 0;
-    checker = user->parse_message(password, buff);
-    
+    std::string response = "";
+
+    response = user->parss_password(password, buff);
+    std::cout << response << std::endl;
 }

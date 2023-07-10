@@ -1,19 +1,19 @@
 NAME = ircserv
 
-SRC = parssing.cpp server.cpp 
+SRC = parssing.cpp server.cpp Message.cpp
 
-HEADER = headerfile.hpp
+HEADER = headerfile.hpp Message.hpp
 
 OBJ = $(SRC:.cpp=.o)
 
 CXX = c++
 
-CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98 -fsanitize=address
 
 $(NAME): $(OBJ)
 	$(CXX) $(OBJ) $(CXXFLAGS) -o $(NAME)
 
-%.o: %.cpp %.hpp
+%.o: %.cpp $(HEADER)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 all: $(NAME)
