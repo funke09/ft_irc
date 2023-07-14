@@ -79,15 +79,21 @@ void removeNewline(std::string& str) {
     }
 }
 
-// int Server::existe(int fd)
-// {
+int Server::existe(int fd)
+{
  
-//     std::vector<client>::iterator it;
-//     for(it = clients.begin(); it != clients.end(); it++)
-//     {
-       
-//     }
-// }
+    std::vector<Client>::iterator it;
+    for(it = clients.begin(); it != clients.end(); it++)
+    {
+       if(it->get_socket_client() == fd)
+       {
+            std::cout << "existe" << std::endl;
+           return (1);
+       }
+    }
+    std::cout << "not existe" << std::endl;
+    return (0);
+}
 
 
 void Server::accept_socket(void) {
@@ -137,7 +143,7 @@ void Server::accept_socket(void) {
                 }
                 else {
                     // int clientfd = fds[j].fd;
-                    flag = i - 1;
+                    flag = j - 1;
                     char buffer[1024];
                     memset(buffer, 0, 1024);
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
@@ -158,118 +164,11 @@ void Server::accept_socket(void) {
                         std::cout << "Client disconnected" << std::endl;
                     }
                     std::cout << "fd "  << fds[j].fd << std::endl;
-                    // if (!existe(fds[j].fd))
-                    // {
+                    
+                    if (!existe(fds[j].fd))
+                    {
                         handel_message(buffer, &clientMap[flag]);
-                    // }
-                    // else
-                    // {
-                    //     // handel join 
-                    // }
-                
-                    // else 
-                    // {
-                    //     std::cout << "Received " << bytes << " bytes" << std::endl;
-                    //     std::cout << "from client: " << buffer << std::endl;
-
-                    //     if (clientMap.find(fds[j].fd) == clientMap.end()) {
-                    //         // New client, expecting password
-                    //         if (strncmp(buffer, "PASS ", 5) == 0) {
-                    //             std::string pass = std::string(buffer).substr(5);
-                    //             removeNewline(pass);
-                            
-                    //             // std::cout << "Client pass: " << pass << "len :" << pass.length() << std::endl;
-                    //             // std::cout << "MY password: " << this->get_password() << "len :"<< password.length() << std::endl;
-                    //             if (pass != password) {
-                    //                 std::cout << "Incorrect password. Closing connection." << std::endl;
-                    //                 close(fds[j].fd);
-                    //             }
-                    //             else {
-                    //                 std::cout << "Client authenticated" << std::endl;
-                    //                 // Add client to the map with an empty username and nickname
-                    //                 // clientMap[fds[j].fd] = "";
-                    //             }
-                    //         }
-                    //         else {
-                    //             std::cout << "Invalid password format. Closing connection." << std::endl;
-                    //             close(fds[j].fd);
-                    //         }
-                    //     }
-                    //     else {
-                    //         // Existing client, expecting client information
-                    //         std::string clientInfo(buffer);
-
-                    //         // Parse client information (username, nickname, password)
-                    //         // Assuming the format: "USERNAME <username> NICKNAME <nickname> PASSWORD <password>"
-                    //         std::string username, nickname, password, channel;
-                    //         size_t pos;
-
-                    //         pos = clientInfo.find("USERNAME ");
-                    //         if (pos != std::string::npos) {
-                    //             pos += 9; // Length of "USERNAME "
-                    //             size_t endPos = clientInfo.find(" ", pos);
-                    //             if (endPos != std::string::npos) {
-                    //                 username = clientInfo.substr(pos, endPos - pos);
-                    //                 pos = endPos + 1;
-                    //             }
-                    //         }
-
-                    //         pos = clientInfo.find("NICKNAME ", pos);
-                    //         if (pos != std::string::npos) {
-                    //             pos += 9; // Length of "NICKNAME "
-                    //             size_t endPos = clientInfo.find(" ", pos);
-                    //             if (endPos != std::string::npos) {
-                    //                 nickname = clientInfo.substr(pos, endPos - pos);
-                    //                 pos = endPos + 1;
-                    //             }
-                    //         }
-
-                    //         pos = clientInfo.find("PASSWORD ", pos);
-                    //         if (pos != std::string::npos) {
-                    //             pos += 9; // Length of "PASSWORD "
-                    //             password = clientInfo.substr(pos);
-                    //         }
-
-                    //         // Verify client information
-                    //         if (username.empty() || nickname.empty() || password.empty()) {
-                    //             std::cout << "Invalid client information. Closing connection." << std::endl;
-                    //             close(fds[j].fd);
-                    //             clientMap.erase(fds[j].fd);
-                    //         }
-                            
-                    //         pos = clientInfo.find("#", pos);
-                    //         if (pos != std::string::npos) {
-                    //             pos += 1;
-                    //             for (unsigned long i = 0; i < Channels.size(); i++)
-                    //             {
-                    //                 if (Channels[i] == clientInfo.substr(pos)) {
-                    //                     std::cout << "Channel already exists" << std::endl;
-                    //                     break;
-                    //                 }
-                    //                 else {
-                    //                     std::cout << "Channel created" << std::endl;
-                    //                     Channels.push_back(clientInfo.substr(pos));
-                    //                     channel = clientInfo.substr(pos);
-                    //                     break;
-                    //                 }
-                    //             }
-                    //             for (unsigned long i = 0; i < Channels.size(); i++)
-                    //             {
-                    //                 std::cout << Channels[i] << std::endl;
-                    //             }
-                                
-                    //         }
-                    //         else {
-                    //             // Store client information in the map
-                    //             clientMap[fds[j].fd] = "Username: " + username + ", Nickname: " + nickname + ", Password: " + password + ", Channel: " + channel;
-
-                    //             // Perform further actions with the client information
-                    //             std::cout << "Client information: " << clientMap[fds[j].fd] << std::endl;
-
-
-                    //         }
-                    //     }
-                    // }
+                    }
                 }
             }
         }
@@ -281,6 +180,6 @@ void Server::handel_message(char *buff, Message *user)
 {
     std::string response = "";
 
-    response = user->parss_password(password, buff);
+    response = user->parss_password(password, buff, this->clients);
     std::cout << response << std::endl;
 }

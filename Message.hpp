@@ -13,9 +13,10 @@
 #include <sys/poll.h>
 #include <string.h>
 #include <map>
+#include <sstream>
 
 #include "client.hpp"
-class client;
+class Client;
 
 class Message
 {
@@ -28,8 +29,9 @@ class Message
     std::string trailing;
     bool is_authenticated;
 
-    client *client;
+    Client client;
     std::string C_password;
+
 
 
     public:
@@ -47,7 +49,7 @@ class Message
     void set_prefix(std::string prefix);
     void set_params(std::vector<std::string> params);
     void set_trailing(std::string trailing);
-    std::string parss_password(std::string password, std::string message);
+    std::string parss_password(std::string password, std::string message, std::vector<Client> &clients);
     // void print_message();
     // void print_params();
     // void print_prefix();

@@ -67,6 +67,10 @@
     "compare": "cpp",
     "concepts": "cpp",
     "__tree": "cpp",
-    "map": "cpp"
+    "map": "cpp",
+    "deque": "cpp",
+    "fstream": "cpp",
+    "iomanip": "cpp",
+    "stack": "cpp"
   }
 }

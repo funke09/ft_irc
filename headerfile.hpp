@@ -39,7 +39,7 @@ class Server
     
     // struct sockaddr_in clientAddress;
     // std::map<int, std::string> clients;
-    // std::vector<client> clients;
+    std::vector<Client> clients;
 
     public:
     Server(int port, std::string password);
