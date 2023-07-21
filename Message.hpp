@@ -16,7 +16,9 @@
 #include <sstream>
 
 #include "client.hpp"
+#include "channel.hpp"
 class Client;
+class Channel;
 
 class Message
 {
@@ -50,6 +52,7 @@ class Message
     void set_params(std::vector<std::string> params);
     void set_trailing(std::string trailing);
     std::string parss_password(std::string password, std::string message, std::vector<Client> &clients);
+    bool isNicknameTaken(const std::vector<Client>& clients, const std::string& nickname);
     // void print_message();
     // void print_params();
     // void print_prefix();
@@ -58,6 +61,9 @@ class Message
     // void print_all();
     void check_command(std::string message, std::string command, std::string password, int size);
     void handleError(int error);
+    // void parss_topic(std::string buffer);
+    
 };
 
+void    erase_charcter(std::string& str, char c);
 #endif

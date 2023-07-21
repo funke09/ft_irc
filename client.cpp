@@ -32,7 +32,7 @@ std::string Client::get_username()
     return (this->username);
 }
 
-std::string Client::get_nickname()
+std::string Client::get_nickname() const
 {
     return (this->nickname);
 }

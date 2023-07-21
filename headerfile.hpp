@@ -17,11 +17,13 @@
 
 #include "Message.hpp"
 #include "client.hpp"
+#include "channel.hpp"
 
 #define MAX_CLIENTS 100
 
 class Message;
 class client;
+class channel;
 
 
 
@@ -40,8 +42,10 @@ class Server
     // struct sockaddr_in clientAddress;
     // std::map<int, std::string> clients;
     std::vector<Client> clients;
+    Client client;
 
     public:
+    Server();
     Server(int port, std::string password);
     ~Server();
     int create_socket();
@@ -54,6 +58,7 @@ class Server
     std::string get_password();
     void handel_message(char *buffer, Message *user);
     int existe(int fd);
+    std::string send_intro_message();
 };
 
 
