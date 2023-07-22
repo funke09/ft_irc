@@ -44,7 +44,7 @@ class Server
     // std::map<int, std::string> clients;
     std::vector<Client> clients;
     std::vector<Channel*> channels;
-    std::vector<std::string>    _operators;
+
 
     public:
     Server(int port, std::string password);
@@ -63,8 +63,10 @@ class Server
     Channel *findChannel(std::string channelName) const;
     std::vector<std::string> SplitTargets(std::string token);
     void    JOIN(std::vector<std::string>& pars, Client *client);
+    const   std::vector<Client>& getClients() const;
     bool    isEmpty() const;
-    void    setOperator(Client *client);
+    void    AddMember(Channel* channel, Client *client, std::string key);
+    bool isOnChannel(Client *client);
 };
 
 

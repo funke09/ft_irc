@@ -210,14 +210,26 @@ void Server::accept_socket(void) {
 
 // }
 
-void Server::setOperator(Client *client)
+const std::vector<Client>& Server::getClients() const
 {
-    _operators.push_back(client->get_nickname());
+    return clients;
+}
+
+bool Server::isOnChannel(Client *client)
+{
+    for (size_t i = 0; i < clients.size(); i++)
+    {
+        if (clients[i].get_nickname() == client->get_nickname())
+        {
+            return true; 
+        }
+    }
+    return false; 
 }
 
 bool Server::isEmpty() const
 {
-    if (clients.size() == 0)
+    if (getClients().size() == 0)
         return true;
     return false;
 }
@@ -256,6 +268,33 @@ std::vector<std::string> Server::SplitTargets(std::string input)
 
 //}
 
+void    Server::AddMember(Channel* channel, Client *client, std::string key)
+{
+    if (!validateJoin(client, key))
+        return;
+    if (this->isOnChannel(client))
+    {
+        std::cout << "client is already on channel");
+        return;
+    }
+    else 
+    {
+        if (client->chan_num == 10)
+        {
+            std::cout << "You have joined too many channels";
+            return;
+        }
+        client->chan_num++;
+        if (isEmpty())
+        {
+            channel->setOperator(client);
+        }
+        // clients.push_back(client);
+        // BroadcastJoinMessage(client);
+        // this->SendJoinReplies(client);
+    }
+}
+
 void    Server::JOIN(std::vector<std::string> &pars, Client* client)
 {
     if (pars.size() < 2)
@@ -288,11 +327,10 @@ void    Server::JOIN(std::vector<std::string> &pars, Client* client)
             channels.push_back(channel);
             _nbrchannels++;
         }
-        channel->AddMember(client, key);
+        AddMember(channel, client, key);
         channels.pop_back();
     }
 }
-
 
 void Server::handel_message(char *buff, Message *user)
 {

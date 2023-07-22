@@ -100,36 +100,6 @@ void Channel::setInvitedList(const std::vector<std::string>& invitedList)
 //     _members.push_back(memberId);
 // }
 
-void    Channel::AddMember(Client *client, std::string key)
-{
-    (void)key;
-    //check if channel is invite mode and if client is invited
-    // if (!CheckJoinErrors(client, key))
-    //     return;
-    // if (this->isOnChannel(client))
-    // {
-    //     std::cout << "client is already on channel");
-    //     return;
-    // }
-    // else 
-    // {
-            //check if the client joined the maximum number of channels of not yet
-            if (client->chan_num == 10)
-            {
-                std::cout << "You have joined too many channels";
-                return;
-            }
-            client->chan_num++;
-            // if (isEmpty())
-            // {
-            //     setOperator(&client);
-            // }
-            // clients.push_back(client);
-            //BroadcastJoinMessage(client);
-            //this->SendJoinReplies(client);
-        //}
-}
-
 void Channel::removeMember(int memberId)
 {
     _members.erase(std::remove(_members.begin(), _members.end(), memberId), _members.end());
@@ -163,6 +133,48 @@ void Channel::inviteUser(const std::string& user)
 void Channel::removeInvitation(const std::string& user)
 {
     _invited_list.erase(std::remove(_invited_list.begin(), _invited_list.end(), user), _invited_list.end());
+}
+
+bool Channel::isBanned(Client *client) const
+{
+    for (size_t i = 0; i < _bans_list.size(); i++)
+    {
+        if (_bans_list[i] == client->get_nickname())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Channel::setOperator(Client *client)
+{
+    _operators.push_back(client->get_nickname());
+}
+
+bool Channel::validateJoin(Client *client, std::string key)
+{
+    if ((this->getMode() >> INV) % 2 && !this->isInvited(client))
+    {
+        this->_server->sendMessage(NULL, client, ERR_INVITEONLYCHAN, 0, " " + this->getChannelName() + " :Cannot join channel (+i)");
+        return false;
+    }
+    if (this->isBanned(client))
+    {
+        this->_server->sendMessage(NULL, client, ERR_BANNEDFROMCHAN, 0, " " + this->getChannelName() + " :Cannot join channel (+b)");
+        return false;
+    }
+    if (this->isFull())
+    {
+        this->_server->sendMessage(NULL, client, ERR_CHANNELISFULL, 0, " " + this->getChannelName() + " :Cannot join channel (+l)");
+        return false;
+    }
+    if ((this->getMode() >> KEY) % 2 && key != this->getKey() && key != "")
+    {
+        this->_server->sendMessage(NULL, client, ERR_BADCHANNELKEY, 0, " " + this->getChannelName() + " :Cannot join channel (+k)");
+        return false;
+    }
+    return true;
 }
 
 // void Channel::changeMode(Client* client, const std::string& modeChanges)

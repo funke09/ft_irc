@@ -6,6 +6,7 @@
 # include <vector>
 # include "client.hpp"
 
+class Server;
 class Client;
 
 class Channel {    
@@ -25,6 +26,7 @@ class Channel {
         std::vector<int>            _moderators;
         std::vector<std::string>    _bans_list;
         std::vector<std::string>    _invited_list;
+        std::vector<std::string>    _operators;
 
     public:
         Channel(const std::string& name, const std::string& pass, const std::string& topic);
@@ -47,7 +49,7 @@ class Channel {
         void setInvitedList(const std::vector<std::string>& invitedList);
 
         //void addMember(int memberId);
-        void    AddMember(Client *client, std::string key);
+        
         void removeMember(int memberId);
         void addModerator(int moderatorId);
         void removeModerator(int moderatorId);
@@ -55,6 +57,10 @@ class Channel {
         void removeBan(const std::string& ban);
         void inviteUser(const std::string& user);
         void removeInvitation(const std::string& user);
+
+        void setOperator(Client *client);
+        bool validateJoin(Client *client, std::string key);
+        bool isBanned(Client *client) const;
 
         //void changeMode(Client* client, const std::string& modeChanges);
 };
