@@ -22,8 +22,8 @@
 #define MAX_CLIENTS 100
 
 class Message;
-class client;
-class channel;
+class Client;
+class Channel;
 
 
 
@@ -42,7 +42,8 @@ class Server
     // struct sockaddr_in clientAddress;
     // std::map<int, std::string> clients;
     std::vector<Client> clients;
-    Client client;
+    std::vector<Channel> _channels;
+    // Client client;
 
     public:
     Server();
@@ -59,7 +60,10 @@ class Server
     void handel_message(char *buffer, Message *user);
     int existe(int fd);
     std::string send_intro_message();
+    std::string privmsg(std::string buff, Client &client);
+    std::string 	mode_response(std::vector<std::string> split, Client &client);
 };
 
+int findClientSocket(const std::vector<Client>& clients, const Client& targetClient);
 
 #endif

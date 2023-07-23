@@ -51,6 +51,7 @@ class Client
     bool check_command(std::string Command);
 
 };
+bool operator==(const Client& lhs, const Client& rhs);
 
 std::ostream& operator<<(std::ostream& os, Client& client);
 

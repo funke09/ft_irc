@@ -193,19 +193,18 @@ void Server::accept_socket(void) {
     }
 }
 
-std::string Server::send_intro_message()
-{
-    std::string welcome_message;
-    welcome_message = ": 001 Welcome to the Internet Relay " + client.get_nickname() + "\r\n";
-    return (welcome_message);
-}
+// std::string Server::send_intro_message()
+// {
+//     std::string welcome_message;
+//     welcome_message = ": 001 Welcome to the Internet Relay " + this + "\r\n";
+//     return (welcome_message);
+// }
 
 void Server::handel_message(char *buff, Message *user)
 {
     std::string buffer(buff);
     std::string response = "";
     std::vector<std::string> input;
-    channel *chan = new channel();
 
     erase_charcter(buffer, '\n');
     erase_charcter(buffer, '\r');
@@ -215,8 +214,8 @@ void Server::handel_message(char *buff, Message *user)
     //     response = send_intro_message();
     if(input[0] == "JOIN")
         std::cout<<"ehehehehe:"<<response<<std::endl;
-    else if(input[0] == "TOPIC")
-        response = chan->parss_topic(buffer);
+    // else if(input[0] == "TOPIC")
+    //     response = chan->parss_topic(buffer);
     std::cout<<response<<std::endl;
     int bit = send(this->client_fd, response.c_str(), response.length(), 0);
     if(bit == -1)

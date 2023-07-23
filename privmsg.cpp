@@ -1,5 +1,16 @@
 #include "headerfile.hpp"
 
+int findClientSocket(std::vector<Client>& clients, const std::string targetClient)
+{
+    for (std::vector<Client>::iterator it = clients.begin(); it != clients.end(); ++it)
+    {
+        if (it->get_nickname() == targetClient)
+        {
+            return it->get_socket_client();
+        }
+    }
+    return 0;
+}
 
 static std::vector<std::string> ft_split(const std::string& str, char delimiter)
 {
@@ -30,25 +41,38 @@ static void 	split_command(std::string buff, std::vector<std::string> &split)
 		split.push_back(tmp[1]);
 }
 
-std::string Server::privmsg(std::string buff, Client &client)
+
+std::string		Server::privmsg(std::string buff, Client &client)
 {
-    std::vector<std::string> split;
-    std::vector<std::string> users;
+	std::vector<std::string>	split;
+	std::vector<std::string>	recipient;
 
-    split_command(buff, split);
-    if (split.size() == 1)
-        return ( "error message not enough params");
-    else if(split.size() == 2)
-        return ("error no text message sended");
-    // else
-    // {
-    //     users = ft_split(split[1], ',');
-    //     std::vector<std::string>::iterator  it;
-    //     it = users.begin();
-    //     for(; it != users.end();it++)
-    //     {
-    //         if (this->)
-    //     }
-
-    // }
+	if(!client.get_isRegistred())
+		return (":localhost 451 * PRIVMSG :You must finish connecting with nickname first.\r\n");
+	split_command(buff, split);
+	if (split.size() == 1)
+		return (client.get_socket_client(), ":" + client.get_nickname() + " 461 PRIVMSG :Not enough parameters\r\n");
+	else if (split.size() == 2)
+		return (client.get_socket_client(), ":" + client.get_nickname() + " 412 PRIVMSG :No text to send\r\n");
+	else
+	{
+		recipient = ft_split(split[1], ','); //split recipient
+		std::vector<std::string>::iterator it = recipient.begin();
+		for(; it != recipient.end(); it++)
+		{
+			// if (this->_channels.find(*it) != this->_channels.end() && client.check_member(*it))//if recipient is a channel
+			// 	this->_channels[*it].broadcast_message(":" + client.get_nick() + " PRIVMSG " + *it + " :" + split[2] + "\r\n", client.get_fd());
+			if (findClientSocket(this->clients, *it))//if recipient is a user
+			{
+				std::string tmp = ":" + client.get_nickname() + " PRIVMSG " + *it + " :" + split[2] + "\r\n";
+				send(findClientSocket(this->clients, *it), tmp.c_str(), tmp.size(), 0);
+			}
+			else
+            {
+                std::string tmp = "401 " + client.get_nickname() + " " + *it + " :No such nick/channel\r\n";
+				send(client.get_socket_client(), tmp.c_str(), tmp.size(), 0);
+            }
+		}
+	}
+	return ("");
 }
