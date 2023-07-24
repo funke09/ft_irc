@@ -216,6 +216,8 @@ void Server::handel_message(char *buff, Message *user)
         std::cout<<"ehehehehe:"<<response<<std::endl;
     // else if(input[0] == "TOPIC")
     //     response = chan->parss_topic(buffer);
+    else if(input[0] == "MODE")
+        response = mode_response(input, this->clients[user->get_socket()]);
     std::cout<<response<<std::endl;
     int bit = send(this->client_fd, response.c_str(), response.length(), 0);
     if(bit == -1)

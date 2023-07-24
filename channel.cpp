@@ -1,19 +1,15 @@
 #include "channel.hpp"
 
-Channel::Channel(const std::string &name, Client *cl)
+Channel::Channel()
 {
-    (void)cl;
-    _name = name;
-    _topic = "";
-    _mode = "";
-    _limit = 100;
-    _is_private = false;
+
 }
 
-Channel::Channel(const std::string& name, const std::string& pass, const std::string& topic) {
+Channel::Channel(const std::string& name) 
+{
     _name = name;
-    _pass = pass;
-    _topic = topic;
+    _pass = "";
+    _topic = "";
     _mode = "";
     _creation_time = "";
     _limit = 100;
@@ -43,7 +39,7 @@ const std::string& Channel::getMode() const
     return _mode;
 }
 
-std::string Channel::getCreationTime() const
+const std::string& Channel::getCreationTime() const
 {
 	return	this->_creation_time;
 }
@@ -68,7 +64,20 @@ const std::vector<std::string>& Channel::getInvitedList() const
     return _invited_list;
 }
 
+const bool& Channel::getInvitedMode() const
+{
+    return _inviteMode;
+}
 
+const bool& Channel::getTopicMode() const
+{
+    return _topicMode;
+}
+
+const bool& Channel::getPrivate() const
+{
+    return _is_private;
+}
 
 void Channel::setName(const std::string& name)
 {
@@ -103,6 +112,26 @@ void Channel::setBansList(const std::vector<std::string>& bansList)
 void Channel::setInvitedList(const std::vector<std::string>& invitedList)
 {
     _invited_list = invitedList;
+}
+
+void Channel::set_invitedMode(const bool& invitemode)
+{
+    _inviteMode = invitemode;
+}
+
+void Channel::set_topicMode(const bool& topicmode)
+{
+    _topicMode = topicmode;
+}
+
+void Channel::set_private(const bool& is_private)
+{
+    _is_private = is_private;
+}
+
+void Channel::set_pass(std::string pass)
+{
+    _pass = pass;
 }
 
 void Channel::addMember(int memberId)

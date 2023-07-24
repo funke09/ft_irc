@@ -5,9 +5,7 @@ static int check_inVect(std::vector<int> vec, int target)
 	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 	    {
 	        if (*it == target)
-	        {
 	            return true;
-	        }
 	    }
 	    return false;
 }
@@ -33,7 +31,37 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 	std::string mode = channel.getMode();
 	flg = 0;
 	response = ":" + client.get_nickname() + "!~" + client.get_username() + "@localhost MODE " + channel.getName();
-	
+	if (split[2][0] == '+')
+	{
+		response += "+";
+		for (int i; split[2][i]; i++)
+		{
+			char x = split[2][i];
+			if (x == 'i' && !channel.getInvitedMode())
+			{
+				mode += "i";
+				response += "i";
+				channel.set_invitedMode(true);
+				flg++;
+			}
+			if (x == 't' && !channel.getTopicMode())
+			{
+				mode += "i";
+				response += "i";
+				channel.set_topicMode(true);
+				flg++;
+			}
+			if(x == 'k' && !channel.getPrivate() && split.size() >= 4)
+			{
+				std::string key = split[3];
+				channel.set_private(true);
+				channel.set_pass(key);
+				mode += "k " + key + " ";
+				response += "k " + key + " ";
+				flg++;
+			}
+		}
+	}
 	if(flg)
 		return (response + "\r\n");
 	return "";

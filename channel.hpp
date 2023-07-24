@@ -1,6 +1,7 @@
 #ifndef CHANNEL_HPP
 #define CHANNEL_HPP
 
+
 #include <iostream>
 #include <vector>
 #include <cstring>
@@ -34,8 +35,8 @@ class Channel {
         std::vector<std::string>    _operators;
 
     public:
-        Channel(const std::string& name, const std::string& pass, const std::string& topic);
-        Channel(const std::string& name, Client *cl);
+        Channel(const std::string& name);
+        Channel();
 
         const std::string& getName() const;
         const std::string& getPass() const;
@@ -46,6 +47,9 @@ class Channel {
         const std::vector<int>& getModerators() const;
         const std::vector<std::string>& getBansList() const;
         const std::vector<std::string>& getInvitedList() const;
+        const bool& getInvitedMode() const;
+        const bool& getTopicMode() const;
+        const bool& getPrivate() const;
 
         void setName(const std::string& name);
         void setPass(const std::string& pass);
@@ -54,6 +58,10 @@ class Channel {
         void setModerators(const std::vector<int>& moderators);
         void setBansList(const std::vector<std::string>& bansList);
         void setInvitedList(const std::vector<std::string>& invitedList);
+        void set_invitedMode(const bool& invitemode);
+        void set_topicMode(const bool& topicmode);
+        void set_private(const bool& is_private);
+        void set_pass(std::string pass);
 
         void addMember(int memberId);
         
