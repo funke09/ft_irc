@@ -12,6 +12,8 @@
 #include "client.hpp"
 #include "headerfile.hpp"
 
+#define MAXCHAN 100
+
 class Server;
 class Client;
 
@@ -66,6 +68,8 @@ class Channel {
         void set_pass(std::string pass);
         void set_limitMode(bool limitMode);
         void set_creationTime(std::string time);
+        void setLimit(int limit);
+        void setMode(std::string mode);
 
         void addMember(int memberId);
         void removeMember(int memberId);

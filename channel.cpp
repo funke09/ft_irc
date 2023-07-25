@@ -163,6 +163,16 @@ void Channel::set_pass(std::string pass)
     _pass = pass;
 }
 
+void Channel::setLimit(int limit)
+{
+    _limit = limit;
+}
+
+void Channel::setMode(std::string mode)
+{
+    _mode = mode;
+}
+
 void Channel::addMember(int memberId)
 {
     _members.push_back(memberId);

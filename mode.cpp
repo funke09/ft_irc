@@ -10,6 +10,18 @@ static int check_inVect(std::vector<int> vec, int target)
 	    return false;
 }
 
+static bool isStringAllDigits(const std::string& str)
+{
+    for (size_t i = 0; i < str.length(); ++i)
+    {
+        if (!std::isdigit(str[i]))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 std::string 	Server::mode_response(std::vector<std::string> split, Client &client)
 {
 	std::string response;
@@ -46,8 +58,8 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 			}
 			if (x == 't' && !channel.getTopicMode())
 			{
-				mode += "i";
-				response += "i";
+				mode += "t";
+				response += "t";
 				channel.set_topicMode(true);
 				flg++;
 			}
@@ -60,8 +72,61 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 				response += "k " + key + " ";
 				flg++;
 			}
+			if(x == 'l' && !channel.get_limitMode() && split.size() >= 4 && isStringAllDigits(split[3]))
+			{
+				int limit = atoi(split[3].c_str());
+				if((size_t)limit < channel.getMembers().size())
+					limit = (int)channel.getMembers().size();
+				channel.set_limitMode(true);
+				channel.setLimit(limit);
+				mode += "l " + std::to_string(limit) + " ";
+				response += "l " + std::to_string(limit) + " ";
+				flg++;
+			}
 		}
 	}
+	else if(split[2][0] == '-')
+	{
+		response += "-";
+		for (int i; split[2][i]; i++)
+		{
+			char x = split[2][i];
+			if (x == 'i' && channel.getInvitedMode())
+			{
+				mode.erase(mode.find('i'), 1);
+				response += "i";
+				channel.set_invitedMode(false);
+				flg++;
+			}
+			if (x == 't' && channel.getTopicMode())
+			{
+				mode.erase(mode.find('t'), 1);
+				response += "t";
+				channel.set_topicMode(false);
+				flg++;
+			}
+			if(x == 'k' && channel.getPrivate() && split.size() >= 4)
+			{
+				std::string oldkey = channel.getPass();
+				std::string key = split[3];
+				channel.set_private(false);
+				channel.set_pass("");
+				mode.erase(mode.find("k " + oldkey + " "), oldkey.length( ) + 3);
+				response += "k " + key;
+				flg++;
+			}
+			if(x == 'l' && channel.get_limitMode())
+			{
+				std::string limit = std::to_string(channel.get_limit());
+				channel.set_limitMode(false);
+				channel.setLimit(MAXCHAN);
+				mode.erase(mode.find("l " + limit + " "), limit.length( ) + 3);
+				response += "l" ;
+				flg++;
+			}				
+		}
+	}
+	channel.setMode(mode);
 	if(flg)
 		return (response + "\r\n");
 	return "";
