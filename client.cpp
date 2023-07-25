@@ -69,6 +69,10 @@ void Client::set_nick(std::string nick, bool nick_stat)
     this->nick = nick_stat;
 }
 
+void	Client::set_channel(std::string channel)
+{
+	this->channels.push_back(channel);
+}
 
 void Client::set_isRegistred()
 {
@@ -117,7 +121,7 @@ bool Client::check_command(std::string Command)
     return true;
 }
 
-bool operator==(const Client& lhs, const Client& rhs);
+bool operator==(const Client& lhs, const Client& rhs)
 {
     return lhs.get_nickname() == rhs.get_nickname();
 }

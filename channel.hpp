@@ -35,8 +35,8 @@ class Channel {
         std::vector<std::string>    _operators;
 
     public:
-        Channel(const std::string& name);
         Channel();
+        Channel(std::string name, std::string pass);
 
         const std::string& getName() const;
         const std::string& getPass() const;
@@ -50,6 +50,8 @@ class Channel {
         const bool& getInvitedMode() const;
         const bool& getTopicMode() const;
         const bool& getPrivate() const;
+        const int&  get_limit() const;
+        const bool& get_limitMode() const;
 
         void setName(const std::string& name);
         void setPass(const std::string& pass);
@@ -62,9 +64,10 @@ class Channel {
         void set_topicMode(const bool& topicmode);
         void set_private(const bool& is_private);
         void set_pass(std::string pass);
+        void set_limitMode(bool limitMode);
+        void set_creationTime(std::string time);
 
         void addMember(int memberId);
-        
         void removeMember(int memberId);
         void addModerator(int moderatorId);
         void removeModerator(int moderatorId);
@@ -73,9 +76,11 @@ class Channel {
         void inviteUser(const std::string& user);
         void removeInvitation(const std::string& user);
 
+        bool isInvited(std::string client);
         void setOperator(Client *client);
         bool validateJoin(Client *client, std::string key);
         bool isBanned(Client *client) const;
+        ~Channel();
         //void changeMode(Client* client, const std::string& modeChanges);
 };
 

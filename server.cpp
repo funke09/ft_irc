@@ -213,7 +213,7 @@ void Server::handel_message(char *buff, Message *user)
     // if(client.get_isRegistred())
     //     response = send_intro_message();
     if(input[0] == "JOIN")
-        std::cout<<"ehehehehe:"<<response<<std::endl;
+        response = joinChannel(input, this->clients[user->get_socket()]);
     // else if(input[0] == "TOPIC")
     //     response = chan->parss_topic(buffer);
     else if(input[0] == "MODE")

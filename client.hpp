@@ -48,6 +48,7 @@ class Client
     void set_user(std::string user, bool user_stat);
     void set_nick(std::string nick, bool nick_stat);
     void set_pass(bool pass_stat);
+    void set_channel(std::string channel);
     bool check_command(std::string Command);
 
 };

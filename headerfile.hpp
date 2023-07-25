@@ -62,6 +62,12 @@ class Server
     std::string send_intro_message();
     std::string privmsg(std::string buff, Client &client);
     std::string 	mode_response(std::vector<std::string> split, Client &client);
+    std::string joinChannel(std::vector<std::string> pars, Client& client);
+    std::string ft_time(void);
+    bool isOnChannel(Client &client);
+    Channel getChannel(std::string channelName);
+    bool channelExists(const std::string& targetName) const;
+
 };
 
 int findClientSocket(const std::vector<Client>& clients, const Client& targetClient);
