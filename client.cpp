@@ -69,6 +69,10 @@ void Client::set_nick(std::string nick, bool nick_stat)
     this->nick = nick_stat;
 }
 
+void	Client::set_channel(std::string channel)
+{
+	this->channels.push_back(channel);
+}
 
 void Client::set_isRegistred()
 {

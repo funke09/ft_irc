@@ -2,12 +2,7 @@
 
 Channel::Channel()
 {
-
-}
-
-Channel::Channel(const std::string& name) 
-{
-    _name = name;
+    _name = "";
     _pass = "";
     _topic = "";
     _mode = "";
@@ -17,6 +12,24 @@ Channel::Channel(const std::string& name)
     _inviteMode = false;
     _topicMode = false;
     _limitMode = false;
+}
+
+Channel::Channel(std::string name, std::string pass)
+{
+    _name = name;
+    _pass = pass;
+    _topic = "";
+    _mode = "";
+    _creation_time = "";
+    _limit = 100;
+    _is_private = false;
+    _inviteMode = false;
+    _topicMode = false;
+    _limitMode = false;
+}
+
+Channel::~Channel()
+{
 }
 
 const std::string& Channel::getName() const
@@ -79,6 +92,26 @@ const bool& Channel::getPrivate() const
     return _is_private;
 }
 
+const int& Channel::get_limit() const
+{
+    return _limit;
+}
+
+const bool& Channel::get_limitMode() const
+{
+    return _limitMode;
+}
+
+void Channel::set_creationTime(std::string time)
+{
+    _creation_time = time;
+}
+
+void Channel::set_limitMode(bool limitMode)
+{
+    _limitMode = limitMode;
+}
+
 void Channel::setName(const std::string& name)
 {
     _name = name;
@@ -134,6 +167,16 @@ void Channel::set_pass(std::string pass)
     _pass = pass;
 }
 
+void Channel::setLimit(int limit)
+{
+    _limit = limit;
+}
+
+void Channel::setMode(std::string mode)
+{
+    _mode = mode;
+}
+
 void Channel::addMember(int memberId)
 {
     _members.push_back(memberId);
@@ -172,6 +215,16 @@ void Channel::inviteUser(const std::string& user)
 void Channel::removeInvitation(const std::string& user)
 {
     _invited_list.erase(std::remove(_invited_list.begin(), _invited_list.end(), user), _invited_list.end());
+}
+
+bool Channel::isInvited(std::string client)
+{
+	for (size_t i = 0; i < this->_invited_list.size(); i++)
+	{
+		if (this->_invited_list[i] == client)
+			return true;
+	}
+	return false;
 }
 
 bool Channel::isBanned(Client *client) const

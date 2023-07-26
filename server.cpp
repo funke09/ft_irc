@@ -207,7 +207,7 @@ void Server::handel_message(char *buff, Message *user)
     input = ft_split(buffer, ' ');
     response = user->parss_password(password, buffer, this->clients);
     if(input[0] == "JOIN")
-        std::cout<<"ehehehehe:"<<response<<std::endl;
+        response = joinChannel(input, this->clients[user->get_socket()]); 
     else if(input[0] == "TOPIC")
         response = chan.parss_topic(buffer);
     else if(input[0] == "MODE")
@@ -220,8 +220,3 @@ void Server::handel_message(char *buff, Message *user)
     }
 
 }
-
-// void send_to_client(int numofmessage, int client_fd, std::string response)
-// {
-    
-// }
