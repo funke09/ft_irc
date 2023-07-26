@@ -175,15 +175,16 @@ void Server::accept_socket(void) {
                         // // Remove client from the map
                         // clientMap.erase(fds[j].fd);
                     }
-                    if(bytes == 0 || !strcmp(buffer, "QUIT leaving...\r\n"))
+                    if(bytes == 0 || !strcmp(buffer, "QUIT\r\n"))
                     {
                         fds_num--;
                         close(fds[j].fd);
                         fds[j].fd = -1;
+                        this->clientMap.erase(flag);
                         std::cout << "Client disconnected" << std::endl;
                     }
                     
-                    else if (!existe(fds[j].fd) && buffer[0] != '\n')
+                    else if (buffer[0] != '\n')
                     {
                         handel_message(buffer, &clientMap[flag]);
                     }
@@ -193,29 +194,22 @@ void Server::accept_socket(void) {
     }
 }
 
-// std::string Server::send_intro_message()
-// {
-//     std::string welcome_message;
-//     welcome_message = ": 001 Welcome to the Internet Relay " + this + "\r\n";
-//     return (welcome_message);
-// }
 
 void Server::handel_message(char *buff, Message *user)
 {
     std::string buffer(buff);
     std::string response = "";
     std::vector<std::string> input;
+    Channel chan;
 
     erase_charcter(buffer, '\n');
     erase_charcter(buffer, '\r');
     input = ft_split(buffer, ' ');
     response = user->parss_password(password, buffer, this->clients);
-    // if(client.get_isRegistred())
-    //     response = send_intro_message();
     if(input[0] == "JOIN")
         std::cout<<"ehehehehe:"<<response<<std::endl;
-    // else if(input[0] == "TOPIC")
-    //     response = chan->parss_topic(buffer);
+    else if(input[0] == "TOPIC")
+        response = chan.parss_topic(buffer);
     else if(input[0] == "MODE")
         response = mode_response(input, this->clients[user->get_socket()]);
     std::cout<<response<<std::endl;

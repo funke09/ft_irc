@@ -1,6 +1,6 @@
 NAME = ircserv
 
-SRC = parssing.cpp server.cpp Message.cpp client.cpp channel.cpp
+SRC = parssing.cpp server.cpp Message.cpp client.cpp channel.cpp mode.cpp
 
 HEADER = headerfile.hpp Message.hpp client.hpp channel.hpp
 

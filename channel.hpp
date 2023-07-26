@@ -76,10 +76,12 @@ class Channel {
         void setOperator(Client *client);
         bool validateJoin(Client *client, std::string key);
         bool isBanned(Client *client) const;
+
+        std::string parss_topic(std::string buffer);
         //void changeMode(Client* client, const std::string& modeChanges);
 };
 
-bool isChannelInVector(const std::vector<Channel>& channels, const std::string& targetChannel);
+int isChannelInVector(const std::vector<Channel>& channels, const std::string& targetChannel);
 bool operator==(const Channel& lhs, const Channel& rhs);
 
 

@@ -34,7 +34,7 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 	if (split[2][0] == '+')
 	{
 		response += "+";
-		for (int i; split[2][i]; i++)
+		for (int i = 0; split[2][i]; i++)
 		{
 			char x = split[2][i];
 			if (x == 'i' && !channel.getInvitedMode())

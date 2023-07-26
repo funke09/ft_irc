@@ -196,7 +196,7 @@ bool operator==(const Channel& lhs, const Channel& rhs)
     return lhs.getName() == rhs.getName();
 }
 
-bool isChannelInVector(const std::vector<Channel>& channels, const std::string& targetChannel)
+int isChannelInVector(const std::vector<Channel>& channels, const std::string& targetChannel)
 {
     int i = 0;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
@@ -210,3 +210,42 @@ bool isChannelInVector(const std::vector<Channel>& channels, const std::string& 
     return (0);
 }
 
+
+
+std::string Channel::parss_topic(std::string buffer)
+{
+  std::vector<std::string> tokens;
+  std::string response;
+      // if(buffer.size() <= 1 && buffer[buffer.size() - 1] == '\n')
+      //   std::cout << "buffer: " << buffer << std::endl;
+
+        // Split the input buffer into tokens using ' ' (space) as the delimiter
+        if(!buffer.empty())
+        {
+            size_t start = 0;
+            size_t end = 0;
+            while ((end = buffer.find(' ', start)) != std::string::npos) {
+                  tokens.push_back(buffer.substr(start, end - start));
+                  start = end + 1;
+            }
+            tokens.push_back(buffer.substr(start));
+
+            if (tokens.size() >= 2 && tokens[0] == "TOPIC" && tokens[1][0] == '#') {
+                  if (tokens[2][0] == ':' && tokens.size() >= 3) {
+                     // Topic is set
+                     this->_name = tokens[1].substr(1); // Remove '#' from the channel _name
+                     this->_topic = tokens[2].substr(1); // Remove ':' from the _topic
+                     response = "topic set for channel " + this->_name + ": " + this->_topic + "\n";
+                  } else {
+                     // _topic is unset
+                     this->_name = tokens[1].substr(1); // Remove '#' from the channel _name
+                     this->_topic = ""; // Empty string indicates no _topic set
+                     response = "topic unset for channel " + this->_name + "\n";
+                  }
+            } else {
+                  // Invalid input, handle the error (e.g., print an error message)
+                  response = "Invalid topic format.\n";
+            }
+        }
+         return response;
+}

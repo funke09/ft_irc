@@ -117,7 +117,7 @@ bool Client::check_command(std::string Command)
     return true;
 }
 
-bool operator==(const Client& lhs, const Client& rhs);
-{
-    return lhs.get_nickname() == rhs.get_nickname();
-}
+// bool operator==(const Client& lhs, const Client& rhs);
+// {
+//     return lhs.get_nickname() == rhs.get_nickname();
+// }

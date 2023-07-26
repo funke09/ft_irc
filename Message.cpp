@@ -126,7 +126,6 @@ std::string Message::parss_password(std::string password, std::string buffer, st
                 erase_charcter(split[4], ':');
                 client.set_user(split[1], true);
                 client.set_real_name(split[4]);
-                // std::cout<<client<<std::endl;
                 return ("");
             }
         }
@@ -147,24 +146,14 @@ std::string Message::parss_password(std::string password, std::string buffer, st
                 client.set_isRegistred();
     
                 // Broadcast the nickname change to other clients
-                
                 // ... send the nicknameChangeMessage to other clients ...
-    
-                return (":" + oldNickname + " NICK " + split[1] + "\r\n");
             }
-        }
-        // else
-        // {
-        //     return ("you may not enter your password, usrname, nickname. \r\n");
-        // }
-        // std::cout << "client: " << client << std::endl; 
-        if (client.get_isRegistred())
-        {   std::cout << "client: " << client << std::endl;
-            // client.set_isRegistred();
-            clients.push_back(client);
-            return(server.send_intro_message());
-            // if(client.set_isRegistred() == true)
-            return (":localhost 001 * :Welcome to the Internet Relay Network\r\n");
+            if (client.get_isRegistred())
+            {   std::cout << "client: " << client << std::endl;
+                clients.push_back(client);
+                std::string nickename = client.get_nickname();
+                return (":localhost 001 * :Welcome to the Internet Relay Network " + nickename + "\r\n");
+            }
         }
     }
     return ("Not authenticated\r\n");
