@@ -263,6 +263,16 @@ int isChannelInVector(const std::vector<Channel>& channels, const std::string& t
     return (0);
 }
 
+void Channel::broadcast_message(std::string message, int fd)
+{
+	for (size_t i = 0; i < this->_members.size(); i++)
+	{
+		if(this->_members[i] != fd)
+			send(this->_members[i], message.c_str(), message.size(), 0);
+	}
+}
+
+
 
 
 std::string Channel::parss_topic(std::string buffer)

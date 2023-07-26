@@ -57,6 +57,12 @@ bool Client::get_pass()
     return (this->pass);
 }
 
+std::vector<std::string> Client::get_channels()
+{
+    return this->channels;
+}
+
+
 void Client::set_user(std::string user, bool user_stat)
 {
     this->username = user;

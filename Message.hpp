@@ -44,6 +44,7 @@ class Message
     std::string get_command();
     std::string get_prefix();
     int get_socket();
+    Client &get_client();
     std::vector<std::string> get_params();
     std::string get_trailing();
     void set_message(std::string message);

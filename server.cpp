@@ -207,13 +207,13 @@ void Server::handel_message(char *buff, Message *user)
     input = ft_split(buffer, ' ');
     response = user->parss_password(password, buffer, this->clients);
     if(input[0] == "JOIN")
-        response = joinChannel(input, this->clients[user->get_socket()]); 
+        response = joinChannel(input, user->get_client()); 
     else if(input[0] == "TOPIC")
         response = chan.parss_topic(buffer);
     else if(input[0] == "MODE")
-        response = mode_response(input, this->clients[user->get_socket()]);
+        response = mode_response(input, user->get_client());
     std::cout<<response<<std::endl;
-    int bit = send(this->client_fd, response.c_str(), response.length(), 0);
+    int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);
     if(bit == -1)
     {
         std::cout<<"error in send"<<std::endl;

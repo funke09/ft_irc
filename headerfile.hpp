@@ -14,6 +14,8 @@
 #include <string.h>
 #include <map>
 #include <cctype>
+#include <netdb.h>
+
 
 #include "Message.hpp"
 #include "client.hpp"
@@ -64,12 +66,14 @@ class Server
     std::string 	mode_response(std::vector<std::string> split, Client &client);
     std::string joinChannel(std::vector<std::string> pars, Client& client);
     std::string ft_time(void);
-    bool isOnChannel(Client &client);
-    Channel getChannel(std::string channelName);
-    bool channelExists(const std::string& targetName) const;
+    int getChannel(std::string channelName);
+    
 
 };
 
+bool isOnChannel(const std::vector<std::string>& channels, const std::string& input);
+bool channelExists(std::vector<Channel> channels, std::string& targetName);
 int findClientSocket(const std::vector<Client>& clients, const Client& targetClient);
+std::string get_adderss();
 
 #endif

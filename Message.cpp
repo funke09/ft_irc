@@ -88,11 +88,15 @@ void    erase_charcter(std::string& str, char c)
     }
 }
 
+Client& Message::get_client()
+{
+    return this->client;
+}
+
 
 std::string Message::parss_password(std::string password, std::string buffer, std::vector<Client> &clients)
 {
     std::vector<std::string> split;
-    Server server;
 
     split = ft_split(buffer, ' ');
     if(!is_authenticated)
@@ -108,7 +112,7 @@ std::string Message::parss_password(std::string password, std::string buffer, st
             else if(split[1] == password)
             {
                 client.set_pass(true);
-                return ("PASSWEORED VALID\r\n");
+                return (":localhost 001 * :Welcome to the Internet Relay Network\r\n");
             }
             else
             {
@@ -126,10 +130,11 @@ std::string Message::parss_password(std::string password, std::string buffer, st
                 erase_charcter(split[4], ':');
                 client.set_user(split[1], true);
                 client.set_real_name(split[4]);
+                // std::cout<<client<<std::endl;
                 return ("");
             }
         }
-        else if(split[0] == "NICK" && client.get_pass() && client.get_user())
+        else if(split[0] == "NICK" && client.get_pass())
         {
             if (split.size() < 2)
                 return (":localhost 431 * :No nickname given\r\n");
@@ -143,18 +148,26 @@ std::string Message::parss_password(std::string password, std::string buffer, st
             {
                 std::string oldNickname = client.get_nickname();
                 client.set_nick(split[1], true);
+        
+                std::string message = ":localhost 001 " + client.get_nickname() + " :Welcome to IRC Network " + client.get_nickname() + " \r\n";
+                send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
+                message = ":localhost 002 " + client.get_nickname() + " :Your host is localhost, running version 1.0\r\n";
+                send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
+                message = ":localhost 003 " + client.get_nickname() + " :This server was created 2023-03-25\r\n";
+                send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
                 client.set_isRegistred();
-    
-                // Broadcast the nickname change to other clients
-                // ... send the nicknameChangeMessage to other clients ...
-            }
-            if (client.get_isRegistred())
-            {   std::cout << "client: " << client << std::endl;
                 clients.push_back(client);
-                std::string nickename = client.get_nickname();
-                return (":localhost 001 * :Welcome to the Internet Relay Network " + nickename + "\r\n");
+                return ("");
             }
         }
+        else
+        {
+            return ("\r\n");
+        }
+        // if (client.get_pass() && client.get_nick() && client.get_user())
+        // {
+
+        // }
     }
     return ("Not authenticated\r\n");
 }

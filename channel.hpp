@@ -87,6 +87,9 @@ class Channel {
         ~Channel();
 
         std::string parss_topic(std::string buffer);
+        void broadcast_message(std::string message, int fd);
+        bool isOnChannel(Client &client);
+
         //void changeMode(Client* client, const std::string& modeChanges);
 };
 

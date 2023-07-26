@@ -50,6 +50,7 @@ class Client
     void set_pass(bool pass_stat);
     void set_channel(std::string channel);
     bool check_command(std::string Command);
+    std::vector<std::string> get_channels();
 
 };
 bool operator==(const Client& lhs, const Client& rhs);
