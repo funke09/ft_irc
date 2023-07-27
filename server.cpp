@@ -202,6 +202,7 @@ void Server::handel_message(char *buff, Message *user)
     std::vector<std::string> input;
     Channel chan;
 
+    std::cout << buffer << std::endl;
     erase_charcter(buffer, '\n');
     erase_charcter(buffer, '\r');
     input = ft_split(buffer, ' ');
@@ -212,11 +213,23 @@ void Server::handel_message(char *buff, Message *user)
         response = chan.parss_topic(buffer);
     else if(input[0] == "MODE")
         response = mode_response(input, user->get_client());
-    std::cout<<response<<std::endl;
-    int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);
-    if(bit == -1)
-    {
-        std::cout<<"error in send"<<std::endl;
+    else if(input[0] == "PRIVMSG")
+        response = privmsg(buffer, user->get_client());
+    if (response.length()){
+        std::cout<<response<<std::endl;
+        int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);
+        if(bit == -1)
+        {
+            std::cout<<"error in send"<<std::endl;
+        }
     }
 
 }
+
+// :nick1!~user@localhost JOIN :#random
+// :localhost 353 nick1 = #random :@nick1
+// :localhost 366 nick1 #random :End of /NAMES list
+
+// :nick1!~user@localhost  JOIN #random
+// :localhost 353 nick1 = #random :@nick1 
+// :localhost 366 nick1 #random :End of /NAMES list.

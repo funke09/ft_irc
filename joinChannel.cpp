@@ -104,10 +104,10 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 					chan.addModerator(client.get_socket_client());
 					chan.set_creationTime(ft_time());
 					_channels.push_back(chan);
-					response = ":" + client.get_nickname() + "!" + client.get_username() + "@" + "0" + " JOIN :" + names[i] + "\r\n"
+					response = ":" + client.get_nickname() + "!~" + client.get_username() + "@localhost" + " JOIN " + names[i] + "\r\n"
           			+ ":localhost" + " 353 " + client.get_nickname() + " = " + names[i] + " :@" + client.get_nickname() + "\r\n"
-          			+ ":localhost" + " 366 " + client.get_nickname() + " = " +  names[i] + " :End of /NAMES list\r\n";
-					send(client.get_socket_client(), response.c_str(), response.size(), 0);
+          			+ ":localhost" + " 366 " + client.get_nickname() + " " +  names[i] + " :End of /NAMES list.\r\n";
+					send(client.get_socket_client(), response.c_str(), response.length(), 0);
 				}
                 else
                 {

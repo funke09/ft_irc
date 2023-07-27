@@ -112,7 +112,7 @@ std::string Message::parss_password(std::string password, std::string buffer, st
             else if(split[1] == password)
             {
                 client.set_pass(true);
-                return (":localhost 001 * :Welcome to the Internet Relay Network\r\n");
+                return ("");
             }
             else
             {
@@ -148,17 +148,19 @@ std::string Message::parss_password(std::string password, std::string buffer, st
             {
                 std::string oldNickname = client.get_nickname();
                 client.set_nick(split[1], true);
-        
-                std::string message = ":localhost 001 " + client.get_nickname() + " :Welcome to IRC Network " + client.get_nickname() + " \r\n";
-                send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
-                message = ":localhost 002 " + client.get_nickname() + " :Your host is localhost, running version 1.0\r\n";
-                send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
-                message = ":localhost 003 " + client.get_nickname() + " :This server was created 2023-03-25\r\n";
-                send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
-                client.set_isRegistred();
-                clients.push_back(client);
-                return ("");
             }
+        }
+        if (client.get_pass() && client.get_nick() && !client.get_isRegistred())
+        {
+            std::string message = ":localhost 001 " + client.get_nickname() + " :Welcome to IRC Network " + client.get_nickname() + " \r\n";
+            send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
+            message = ":localhost 002 " + client.get_nickname() + " :Your host is localhost, running version 1.0\r\n";
+            send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
+            message = ":localhost 003 " + client.get_nickname() + " :This server was created 2023-03-25\r\n";
+            send(client.get_socket_client(), (char *)message.c_str(), message.length(), 0);
+            client.set_isRegistred();
+            clients.push_back(client);
+            return ("");
         }
         else
         {
