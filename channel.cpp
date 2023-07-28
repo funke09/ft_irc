@@ -217,6 +217,11 @@ void Channel::removeInvitation(const std::string& user)
     _invited_list.erase(std::remove(_invited_list.begin(), _invited_list.end(), user), _invited_list.end());
 }
 
+void Channel::addInvitedList(std::string user)
+{
+	this->_invited_list.push_back(user);
+}
+
 bool Channel::isInvited(std::string client)
 {
 	for (size_t i = 0; i < this->_invited_list.size(); i++)

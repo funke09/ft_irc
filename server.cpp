@@ -227,12 +227,14 @@ void Server::handel_message(char *buff, Message *user)
     response = user->parss_password(password, buffer, this->clients);
     if(input[0] == "JOIN")
         response = joinChannel(input, user->get_client()); 
-    else if(input[0] == "MODE")
-        response = mode_response(input, user->get_client());
+    else if(input[0] == "PRIVMSG")
+        response = privmsg(buffer, user->get_client());
     else if(input[0] == "TOPIC")
         response = parss_topic(buffer, user->get_client());
     else if(input[0] == "PRIVMSG")
         response = privmsg(buffer, user->get_client());
+    else if(input[0] == "INVITE")
+        response = invite(input, user->get_client());
     if (response.length()){
         std::cout<<response<<std::endl;
         int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);

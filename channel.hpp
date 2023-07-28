@@ -79,6 +79,8 @@ class Channel {
         void removeBan(const std::string& ban);
         void inviteUser(const std::string& user);
         void removeInvitation(const std::string& user);
+        void addInvitedList(std::string user);
+
 
         bool isInvited(std::string client);
         void setOperator(Client *client);

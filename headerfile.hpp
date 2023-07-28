@@ -74,7 +74,7 @@ class Server
     bool OnChannel(const std::vector<std::string>& channels, const std::string& input);
     std::string parss_topic(std::string buffer , Client &client);
     bool ChanmodeExists(std::vector<Channel> channels, std::string& targetName);
-
+    std::string	invite(std::vector<std::string> input, Client &client);
 };
 
 int findClientSocket(const std::vector<Client>& clients, const Client& targetClient);
