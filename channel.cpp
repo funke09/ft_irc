@@ -254,9 +254,10 @@ int isChannelInVector(const std::vector<Channel>& channels, const std::string& t
     int i = 0;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
     {
-        std::string neww = "#" + targetChannel;
-        if (it->getName() == neww)
+        std::cout << "it->getName() = " << it->getName() << "targetname == " << targetChannel << std::endl;
+        if (it->getName() == targetChannel)
         {
+        std::cout << "it->getName().size = " << it->getName().size() << "targetname.size == " << targetChannel.size() << std::endl;
             return i;
         }
         i++;

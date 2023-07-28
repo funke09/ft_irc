@@ -31,7 +31,7 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 		return (":localhost 451 * MODE :You must finish connecting with nickname first.\r\n");
 	if(split.size() < 2)
 		return (":localhost 461 " + client.get_nickname() + " " + split[0] + " :Not enough parameters\r\n");
-	if(!isChannelInVector(this->_channels, split[1]))
+	if(!ChanmodeExists(this->_channels, split[1]))
 		return (":localhost 403 " + client.get_nickname() +  " " + split[1] + " :No such channel\r\n");
 	Channel &channel = this->_channels[isChannelInVector(this->_channels, split[1])];
 	if(split.size() == 2 && check_inVect(channel.getMembers(), client.get_socket_client()))
@@ -60,7 +60,8 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 			{
 				mode += "t";
 				response += "t";
-				channel.set_topicMode(true);
+				client.set_topicMode(true);
+				// channel.set_topicMode(true);
 				flg++;
 			}
 			if(x == 'k' && !channel.getPrivate() && split.size() >= 4)

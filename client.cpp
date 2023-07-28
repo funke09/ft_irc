@@ -2,7 +2,14 @@
 
 Client::Client()
 {
-
+      this->username = "";
+    this->nickname = "";
+    this->real_name = "";
+    this->isRegistred = false;
+    this->user = false;
+    this->nick = false;
+    this->pass = false;  
+    this->topicMode = false;
 }
 
 Client::~Client()
@@ -20,6 +27,17 @@ Client::Client(int socket_client)
     this->user = false;
     this->nick = false;
     this->pass = false;
+    this->topicMode = false;
+}
+
+bool Client::get_topicMode()
+{
+    return (this->topicMode);
+}
+
+void Client::set_topicMode(bool topicMode)
+{
+    this->topicMode = topicMode;
 }
 
 int Client::get_socket_client()

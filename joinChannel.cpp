@@ -43,6 +43,18 @@ int Server::getChannel(std::string channelName)
     return 0;
 }
 
+bool Server::ChanmodeExists(std::vector<Channel> channels, std::string& targetName)
+{
+    std::vector<Channel>::const_iterator it;
+    for (it = channels.begin(); it != channels.end(); ++it)
+    {
+
+        if (it->getName() == targetName)
+            return true;
+    }
+    return false;
+}
+
 bool Server::channelExists(std::vector<Channel> channels, std::string& targetName)
 {
     std::vector<Channel>::const_iterator it;

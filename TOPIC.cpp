@@ -8,7 +8,7 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
         std::string channel_name;
 
         // Split the input buffer into tokens using ' ' (space) as the delimiter
-        if (!buffer.empty() && this->_channels[getChannel(channel_name)].getTopicMode()) {
+        if (!buffer.empty() && client.get_topicMode()) {
             size_t start = 0;
             size_t end = 0;
             while ((end = buffer.find(' ', start)) != std::string::npos) {
@@ -49,8 +49,8 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                     response = "Topic unset for channel " + channel_name + "\r\n";
                 }
                 // Viewing a set topic
-            //     else 
-            //     {
+                else 
+                {
                     if(this->_channels[getChannel(channel_name)].getTopic().empty())
                     {
                         response = ":localhost (331) RPL_NOTOPIC " + channel_name + " :No topic is set\r\n";
@@ -59,7 +59,7 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                     {
                         response = ":localhost (332) RPL_TOPIC " + channel_name + " :" + this->_channels[getChannel(channel_name)].getTopic() + "\r\n";
                     }
-            //     }
+                }
             } 
             else {
                 // Invalid input, handle the error (e.g., print an error message)

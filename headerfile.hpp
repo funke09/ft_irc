@@ -73,6 +73,7 @@ class Server
     std::vector<Channel> getChannelsVector();
     bool OnChannel(const std::vector<std::string>& channels, const std::string& input);
     std::string parss_topic(std::string buffer , Client &client);
+    bool ChanmodeExists(std::vector<Channel> channels, std::string& targetName);
 
 };
 
