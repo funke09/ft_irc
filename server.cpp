@@ -193,7 +193,7 @@ void Server::accept_socket(void) {
                         // // Remove client from the map
                         // clientMap.erase(fds[j].fd);
                     }
-                    if(bytes == 0 || !strcmp(buffer, "QUIT\r\n"))
+                    if(bytes == 0)
                     {
                         fds_num--;
                         close(fds[j].fd);
@@ -226,7 +226,9 @@ void Server::handel_message(char *buff, Message *user)
     input = ft_split(buffer, ' ');
     response = user->parss_password(password, buffer, this->clients);
     if(input[0] == "JOIN")
-        response = joinChannel(input, user->get_client()); 
+        response = joinChannel(input, user->get_client());
+    else if(input[0] == "MODE")
+        response = mode_response(input, user->get_client()); 
     else if(input[0] == "PRIVMSG")
         response = privmsg(buffer, user->get_client());
     else if(input[0] == "TOPIC")

@@ -160,10 +160,6 @@ std::string Message::parss_password(std::string password, std::string buffer, st
             clients.push_back(client);
             return ("");
         }
-        // if (client.get_pass() && client.get_nick() && client.get_user())
-        // {
-
-        // }
     }
     return ("Not authenticated\r\n");
 }

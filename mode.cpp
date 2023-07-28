@@ -56,12 +56,11 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 				channel.set_invitedMode(true);
 				flg++;
 			}
-			if (x == 't' && !channel.getTopicMode())
+			if (x == 't' && !client.get_topicMode())
 			{
 				mode += "t";
 				response += "t";
 				client.set_topicMode(true);
-				// channel.set_topicMode(true);
 				flg++;
 			}
 			if(x == 'k' && !channel.getPrivate() && split.size() >= 4)
@@ -99,11 +98,11 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 				channel.set_invitedMode(false);
 				flg++;
 			}
-			if (x == 't' && channel.getTopicMode())
+			if (x == 't' && client.get_topicMode())
 			{
 				mode.erase(mode.find('t'), 1);
 				response += "t";
-				channel.set_topicMode(false);
+				client.set_topicMode(false);
 				flg++;
 			}
 			if(x == 'k' && channel.getPrivate() && split.size() >= 4)
@@ -124,7 +123,10 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 				mode.erase(mode.find("l " + limit + " "), limit.length( ) + 3);
 				response += "l" ;
 				flg++;
-			}				
+			}
+			else
+				std::cout << "Error :Flag "<< x << " not supported\r\n" ;
+			
 		}
 	}
 	channel.setMode(mode);
