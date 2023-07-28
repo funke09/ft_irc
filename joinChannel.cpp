@@ -64,7 +64,7 @@ bool Server::channelExists(std::vector<Channel> channels, std::string& targetNam
 		new_target = "#" + targetName;
         if (it->getName() == new_target)
             return true;
-    }
+	}
     return false;
 }
 
