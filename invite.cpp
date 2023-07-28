@@ -10,16 +10,16 @@ bool chan_inVect(std::vector<int> vect, int value)
 	return false;
 }
 
-int getclientFd(std::map<int, Message> clientMap, std::string nickname)
+int getclientFd(std::vector<Client> clients, std::string nickname)
 {
-	std::map<int, Message>::iterator it;
-
-	for(it = clientMap.begin(); it != clientMap.end(); it++)
-	{
-		if(it->second.get_client().get_nickname() == nickname)
-			return (it->first);
-	}
-	return 0;
+    for (size_t i = 0; i < clients.size(); i++)
+    {
+        if (clients[i].get_nickname() == nickname)
+        {
+            return clients[i].get_socket_client();
+        }
+    }
+    return 0;
 }
 
 std::string	Server::invite(std::vector<std::string> input, Client &client)
@@ -39,18 +39,20 @@ std::string	Server::invite(std::vector<std::string> input, Client &client)
             chan = *it;
             break;
         }
+		else
+			return (":localhost 403 " + client.get_nickname() + " " + input[2] + " :No such channel\r\n");
     }
 	if(chan.getInvitedMode() && !chan_inVect(chan.getModerators(), client.get_socket_client()))
 		return (":localhost 482 " + client.get_nickname() + " " + input[2] + " :You're not channel operator\r\n");
 	if(!chan_inVect(chan.getMembers(), client.get_socket_client()))
 		return (":localhost 442 " + client.get_nickname() + " " + input[2] + " :You're not on that channel\r\n");
-	clientFd = getclientFd(this->clientMap, input[1]);
+	clientFd = getclientFd(this->clients, input[1]);
 	if(chan_inVect(chan.getMembers(), clientFd))
 		return (":localhost 443 " + client.get_nickname() + " " + input[1] + " " + input[2] +  " :is already on channel\r\n");
 	if(clientFd)
 	{
 		chan.addInvitedList(input[1]);
-		std::string response = ":" + client.get_nickname() + "!~" + client.get_username() + "@loclhost INVITE you " + input[2] + "\r\n";
+		std::string response = ":" + client.get_nickname() + "!~" + client.get_username() + "@localhost INVITE " + input[1] + " " + input[2] + "\r\n";
 		send(clientFd, response.c_str(), response.size(), 0);
 	}			
 	return "";
