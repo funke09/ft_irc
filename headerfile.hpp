@@ -36,6 +36,7 @@ class Server
     int socket_fd;
     int client_fd;
     int flag;
+
     std::string password;
     struct sockaddr_in serverAddress;
     std::map<int, Message> clientMap;
@@ -67,12 +68,14 @@ class Server
     std::string joinChannel(std::vector<std::string> pars, Client& client);
     std::string ft_time(void);
     int getChannel(std::string channelName);
-    
+    bool isOnChannel(const std::vector<std::string>& channels, const std::string& input);
+    bool channelExists(std::vector<Channel> channels, std::string& targetName);
+    std::vector<Channel> getChannelsVector();
+    bool OnChannel(const std::vector<std::string>& channels, const std::string& input);
+    std::string parss_topic(std::string buffer , Client &client);
 
 };
 
-bool isOnChannel(const std::vector<std::string>& channels, const std::string& input);
-bool channelExists(std::vector<Channel> channels, std::string& targetName);
 int findClientSocket(const std::vector<Client>& clients, const Client& targetClient);
 std::string get_adderss();
 

@@ -33,7 +33,6 @@ std::string Server::ft_time(void)
 }
 
 
-
 int Server::getChannel(std::string channelName)
 {
     for (size_t i = 0; i < _channels.size(); i++)
@@ -44,22 +43,26 @@ int Server::getChannel(std::string channelName)
     return 0;
 }
 
-bool channelExists(std::vector<Channel> channels, std::string& targetName)
+bool Server::channelExists(std::vector<Channel> channels, std::string& targetName)
 {
     std::vector<Channel>::const_iterator it;
     for (it = channels.begin(); it != channels.end(); ++it)
     {
-        if (it->getName() == targetName)
+		std::string new_target;
+		new_target = "#" + targetName;
+        if (it->getName() == new_target)
             return true;
     }
     return false;
 }
 
-bool isOnChannel(const std::vector<std::string>& channels, const std::string& input)
+bool Server::isOnChannel(const std::vector<std::string>& channels, const std::string& input)
 {
     for (size_t i = 0; i < channels.size(); i++)
     {
-        if (channels[i] == input)
+		std::string new_input;
+		new_input = "#" + input;
+        if (channels[i] == new_input)
         {
 
             return true; 

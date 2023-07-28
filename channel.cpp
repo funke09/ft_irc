@@ -254,7 +254,8 @@ int isChannelInVector(const std::vector<Channel>& channels, const std::string& t
     int i = 0;
     for (std::vector<Channel>::const_iterator it = channels.begin(); it != channels.end(); ++it)
     {
-        if (it->getName() == targetChannel)
+        std::string neww = "#" + targetChannel;
+        if (it->getName() == neww)
         {
             return i;
         }
@@ -275,40 +276,70 @@ void Channel::broadcast_message(std::string message, int fd)
 
 
 
-std::string Channel::parss_topic(std::string buffer)
-{
-  std::vector<std::string> tokens;
-  std::string response;
-      // if(buffer.size() <= 1 && buffer[buffer.size() - 1] == '\n')
-      //   std::cout << "buffer: " << buffer << std::endl;
+// std::string Channel::parss_topic(std::string buffer , Client &client) {
+//         std::vector<std::string> tokens;
+//         std::string response;
+      
+//         std::string channel_name;
 
-        // Split the input buffer into tokens using ' ' (space) as the delimiter
-        if(!buffer.empty())
-        {
-            size_t start = 0;
-            size_t end = 0;
-            while ((end = buffer.find(' ', start)) != std::string::npos) {
-                  tokens.push_back(buffer.substr(start, end - start));
-                  start = end + 1;
-            }
-            tokens.push_back(buffer.substr(start));
+//         // Split the input buffer into tokens using ' ' (space) as the delimiter
+//         if (!buffer.empty() ) {
+//             size_t start = 0;
+//             size_t end = 0;
+//             while ((end = buffer.find(' ', start)) != std::string::npos) {
+//                 tokens.push_back(buffer.substr(start, end - start));
+//                 start = end + 1;
+//             }
+//             tokens.push_back(buffer.substr(start));
+//             if (tokens.size() >= 2 && tokens[0] == "TOPIC" && tokens[1][0] == '#' && tokens[1].size() > 1) {
+//                     channel_name = tokens[1].substr(1); // Remove '#' from the channel name
+//                 // set topic for channel
+//                 if (tokens.size() >= 3 && tokens[2][0] == ':' && tokens[2][1] != '\n') {
+//                     // Topic is set
+//                     std::string topic = tokens[2].substr(1); // Remove ':' from the topic
 
-            if (tokens.size() >= 2 && tokens[0] == "TOPIC" && tokens[1][0] == '#') {
-                  if (tokens[2][0] == ':' && tokens.size() >= 3) {
-                     // Topic is set
-                     this->_name = tokens[1].substr(1); // Remove '#' from the channel _name
-                     this->_topic = tokens[2].substr(1); // Remove ':' from the _topic
-                     response = "topic set for channel " + this->_name + ": " + this->_topic + "\n";
-                  } else {
-                     // _topic is unset
-                     this->_name = tokens[1].substr(1); // Remove '#' from the channel _name
-                     this->_topic = ""; // Empty string indicates no _topic set
-                     response = "topic unset for channel " + this->_name + "\n";
-                  }
-            } else {
-                  // Invalid input, handle the error (e.g., print an error message)
-                  response = "Invalid topic format.\n";
-            }
-        }
-         return response;
-}
+//                     if (this.channelExists(server.getChannelsVector(), channel_name)) {
+
+//                         if(server.isOnChannel(client.get_channels(), channel_name))
+//                         {
+//                             this->_topic = topic;
+//                             response = "Topic set for channel " + channel_name + " :" + topic + "\n";
+//                         }
+//                         else
+//                         {
+//                             response = ":localhost (442) ERR_NOTONCHANNEL: " + channel_name + " :You're not on that channel\n";
+//                         }
+//                     } 
+//                     else {
+//                         response = ":localhost (403) ERR_NOSUCHCHANNEL: " + channel_name + " :No such channel\n";
+//                     }
+//                 }
+// // unset topic for channel 
+//                 else if (tokens[2][0] == ':'){
+//                     // Topic is unset
+//                     // this->_name = channel_name;
+//                     this->_topic = ""; // Empty string indicates no topic set
+//                     response = "Topic unset for channel " + channel_name + "\n";
+//                 }
+//                 // Viewing a set topic
+//                 else 
+//                 {
+//                     if(_topic.empty())
+//                     {
+//                         response = ":localhost (331) RPL_NOTOPIC " + channel_name + " :No topic is set\n";
+//                     }
+//                     else
+//                     {
+//                         response = ":localhost (332) RPL_TOPIC " + channel_name + " :" + _topic + "\n";
+//                     }
+//                 }
+//             } 
+//             else {
+//                 // Invalid input, handle the error (e.g., print an error message)
+//                 response = ":localhost (461) ERR_NEEDMOREPARAMS :Not enough parameters\n";
+//             }
+//         }
+//         else
+//             response = ":localhost (482) ERR_CHANOPRIVSNEEDED " + channel_name + " :You're not channel operator\n";
+//         return (response);
+//  }

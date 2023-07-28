@@ -86,7 +86,7 @@ class Channel {
         bool isBanned(Client *client) const;
         ~Channel();
 
-        std::string parss_topic(std::string buffer);
+        // std::string parss_topic(std::string buffer, Client &client);
         void broadcast_message(std::string message, int fd);
         bool isOnChannel(Client &client);
 

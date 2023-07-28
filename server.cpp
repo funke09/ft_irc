@@ -27,6 +27,24 @@ std::string Server::get_password()
     return (this->password);
 }
 
+std::vector<Channel> Server::getChannelsVector()
+{
+    if(_channels.empty())
+    {
+        std::cout << "channels is empty" << std::endl;
+    }
+    else
+    {
+        std::cout << "channels is not empty" << std::endl;
+    }
+    std::vector<Channel>::iterator it;
+    for(it = _channels.begin(); it != _channels.end(); it++)
+    {
+        std::cout << "in get vector : " << it->getName() << std::endl;
+    }
+    return (this->_channels);
+}
+
 Server::~Server()
 {
     close(this->socket_fd);
@@ -200,7 +218,7 @@ void Server::handel_message(char *buff, Message *user)
     std::string buffer(buff);
     std::string response = "";
     std::vector<std::string> input;
-    Channel chan;
+    // Channel chan;
 
     std::cout << buffer << std::endl;
     erase_charcter(buffer, '\n');
@@ -209,10 +227,10 @@ void Server::handel_message(char *buff, Message *user)
     response = user->parss_password(password, buffer, this->clients);
     if(input[0] == "JOIN")
         response = joinChannel(input, user->get_client()); 
-    else if(input[0] == "TOPIC")
-        response = chan.parss_topic(buffer);
     else if(input[0] == "MODE")
         response = mode_response(input, user->get_client());
+    else if(input[0] == "TOPIC")
+        response = parss_topic(buffer, user->get_client());
     else if(input[0] == "PRIVMSG")
         response = privmsg(buffer, user->get_client());
     if (response.length()){
