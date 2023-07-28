@@ -101,14 +101,12 @@ std::string Message::parss_password(std::string password, std::string buffer, st
     split = ft_split(buffer, ' ');
     if(!is_authenticated)
     {
-        if(split[0] == "PASS")
+        if(split[0] == "PASS" )
         {
+            if(split.size() < 2)
+                return (":localhost 461 * PASS :Not enough parameters\r\n");
             if(client.get_pass())
                 return (":localhost 462 " + client.get_nickname() + " USER :You may not reregister\r\n");
-            else if(split[1].empty())
-            {
-                return (":localhost 461 * PASS :Not enough parameters\r\n");
-            }
             else if(split[1] == password)
             {
                 client.set_pass(true);
@@ -121,11 +119,11 @@ std::string Message::parss_password(std::string password, std::string buffer, st
         }
         else if (split[0] == "USER" && client.get_pass())
         {
+            if(split.size() < 5 || (split[4].size() < 2 || split[4][0] != ':' || split[4][1] == '\n'))
+                return (":localhost 461 * USER :Not enough parameters\r\n");
             if (client.get_user())
                 return (":localhost 462 " + client.get_username() + " USER :You may not reregister\r\n");
-            else if(split.size() < 5)
-                return (":localhost 461 * USER :Not enough parameters\r\n");
-            else if ((split[2].size() == 1 && split[2][0] == '0') && (split[3].size() == 1 && split[3][0] == '*') )
+            else if ((split[2].size() == 1 && split[2][0] == '0') && (split[3].size() == 1 && split[3][0] == '*' ))
             {
                 erase_charcter(split[4], ':');
                 client.set_user(split[1], true);
@@ -161,10 +159,6 @@ std::string Message::parss_password(std::string password, std::string buffer, st
             client.set_isRegistred();
             clients.push_back(client);
             return ("");
-        }
-        else
-        {
-            return ("\r\n");
         }
         // if (client.get_pass() && client.get_nick() && client.get_user())
         // {
