@@ -129,6 +129,7 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 			
 		}
 	}
+	
 	channel.setMode(mode);
 	if(flg)
 		return (response + "\r\n");

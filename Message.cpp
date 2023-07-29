@@ -119,7 +119,7 @@ std::string Message::parss_password(std::string password, std::string buffer, st
         }
         else if (split[0] == "USER" && client.get_pass())
         {
-            if(split.size() < 5 || (split[4].size() < 2 || split[4][0] != ':' || split[4][1] == '\n'))
+            if(split.size() < 5)
                 return (":localhost 461 * USER :Not enough parameters\r\n");
             if (client.get_user())
                 return (":localhost 462 " + client.get_username() + " USER :You may not reregister\r\n");

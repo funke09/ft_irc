@@ -60,9 +60,7 @@ bool Server::channelExists(std::vector<Channel> channels, std::string& targetNam
     std::vector<Channel>::const_iterator it;
     for (it = channels.begin(); it != channels.end(); ++it)
     {
-		std::string new_target;
-		new_target = "#" + targetName;
-        if (it->getName() == new_target)
+        if (it->getName() == targetName)
             return true;
 	}
     return false;
@@ -72,9 +70,8 @@ bool Server::isOnChannel(const std::vector<std::string>& channels, const std::st
 {
     for (size_t i = 0; i < channels.size(); i++)
     {
-		std::string new_input;
-		new_input = "#" + input;
-        if (channels[i] == new_input)
+		
+        if (channels[i] == input)
         {
 
             return true; 

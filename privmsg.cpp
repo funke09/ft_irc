@@ -60,8 +60,8 @@ std::string		Server::privmsg(std::string buff, Client &client)
 		std::vector<std::string>::iterator it = recipient.begin();
 		for(; it != recipient.end(); it++)
 		{
-			// if (this->_channels.find(*it) != this->_channels.end() && client.check_member(*it))
-			// 	this->_channels[*it].broadcast_message(":" + client.get_nick() + " PRIVMSG " + *it + " :" + split[2] + "\r\n", client.get_fd());
+			if (channelExists(this->_channels, *it))
+				this->_channels[getChannel(*it)].broadcast_message(":" + client.get_nickname() + " PRIVMSG " + *it + " :" + split[2] + "\r\n", client.get_socket_client());
 			if (findClientSocket(this->clients, *it))
 			{
 				std::string tmp = ":" + client.get_nickname() + " PRIVMSG " + *it + " :" + split[2] + "\r\n";

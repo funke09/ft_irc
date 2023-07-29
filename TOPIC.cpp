@@ -18,7 +18,7 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
             tokens.push_back(buffer.substr(start));
             if (tokens.size() >= 2 && tokens[0] == "TOPIC" && tokens[1][0] == '#' && tokens[1].size() > 1) 
             {
-                    erase_charcter(tokens[1], '#');
+                    // erase_charcter(tokens[1], '#');
                     channel_name = tokens[1]; // Remove '#' from the channel name
                 // set topic for channel
                 if (tokens.size() == 3 && tokens[2][0] == ':' && (tokens[2][1] != '\r' || tokens[2][1] != '\n') && tokens[2][1] != '\0') {
@@ -53,27 +53,14 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                 // Viewing a set topic
                 else 
                 {
-                    int i = getChannel(channel_name);
-                    std::cout << "channel index: " << i << std::endl;
-                    std::cout << "l9lawi ===> "<<this->_channels[getChannel(channel_name)].getTopic() << std::endl;
-                    // exit(0);
-                    // if(this->_channels[getChannel(channel_name)].getTopic().empty())
                     if(this->_channels[getChannel(channel_name)].getTopic().size() == 0)
-                    {
                         response = ":localhost (331) RPL_NOTOPIC " + channel_name + " :No topic is set\r\n";
-                        std::cout << "Viewing a set topic 888988888" << std::endl;
-                    }
                     else
-                    {
                         response = ":localhost (332) RPL_TOPIC " + channel_name + " :" + this->_channels[getChannel(channel_name)].getTopic() + "\r\n";
-                        std::cout << "Viewing a set topic 1111111" << std::endl;
-                    }
                 }
             } 
-            else {
-                // Invalid input, handle the error (e.g., print an error message)
+            else 
                 response = ":localhost (461) ERR_NEEDMOREPARAMS :Not enough parameters\r\n";
-            }
         }
         else
             response = ":localhost (482) ERR_CHANOPRIVSNEEDED " + channel_name + " :You're not channel operator\r\n";
