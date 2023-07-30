@@ -123,11 +123,12 @@ static std::vector<std::string> ft_split(const std::string& str, char delimiter)
     std::stringstream ss(str);
     std::string token;
 
+    
     while (std::getline(ss, token, delimiter))
     {
         tokens.push_back(token);
     }
-
+    
     return tokens;
 }
 
@@ -151,10 +152,11 @@ void Server::accept_socket(void) {
             close(this->socket_fd);
             return;
         }
-
+        fcntl(this->socket_fd, F_SETFL, O_NONBLOCK);
         for (int j = 0; j < fds_num; j++) {
             if (fds[j].revents & POLLIN) {
                 if (fds[j].fd == this->socket_fd) {
+                    
                     // Accept new client connection
                     if ((client_fd = accept(this->socket_fd, (struct sockaddr*)&serverAddress, (socklen_t*)&i)) == -1) {
                         std::cout << "Failed to accept connection" << std::endl;
@@ -220,7 +222,6 @@ void Server::handel_message(char *buff, Message *user)
     std::vector<std::string> input;
     // Channel chan;
 
-    std::cout << buffer << std::endl;
     erase_charcter(buffer, '\n');
     erase_charcter(buffer, '\r');
     input = ft_split(buffer, ' ');
