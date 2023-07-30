@@ -1,6 +1,6 @@
 #include "headerfile.hpp"
 
-static int check_inVect(std::vector<int> vec, int target)
+static bool check_inVect(std::vector<int> vec, int target)
 {
 	for (std::vector<int>::const_iterator it = vec.begin(); it != vec.end(); ++it)
 	    {
@@ -8,6 +8,20 @@ static int check_inVect(std::vector<int> vec, int target)
 	            return true;
 	    }
 	    return false;
+}
+
+static int find_client(Channel channel, std::vector<Client> clients, std::string client_name)
+{
+	
+	for (std::vector<Client>::const_iterator it = clients.begin(); it != clients.end(); ++it)
+	    {
+	        if (it->get_nickname() == client_name)
+			{
+				if (check_inVect(channel.getMembers(), it->get_socket_client()))
+					return it->get_socket_client();
+			}
+	    }
+	    return 0;
 }
 
 static bool isStringAllDigits(const std::string& str)
@@ -83,6 +97,14 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 				response += "l " + std::to_string(limit) + " ";
 				flg++;
 			}
+			if(x == 'o' && channel.is_moderator(client.get_socket_client()) && split.size() >= 4 && find_client(channel, clients, split[3]))
+			{
+				std::string user = split[3];
+				channel.addModerator(find_client(channel, clients, user));
+				mode += "o " + user + " ";
+				response += "o " + user + " ";
+				flg++;
+			}
 		}
 	}
 	else if(split[2][0] == '-')
@@ -122,6 +144,13 @@ std::string 	Server::mode_response(std::vector<std::string> split, Client &clien
 				channel.setLimit(MAXCHAN);
 				mode.erase(mode.find("l " + limit + " "), limit.length( ) + 3);
 				response += "l" ;
+				flg++;
+			}
+			if(x == 'o' && channel.is_moderator(client.get_socket_client()) && split.size() >= 4 && find_client(channel, clients, split[3]))
+			{
+				std::string user = split[3];
+				channel.removeModerator(find_client(channel, clients, split[3]));
+				response += "o " + user + " ";
 				flg++;
 			}
 			else

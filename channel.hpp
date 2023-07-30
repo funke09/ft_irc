@@ -49,6 +49,7 @@ class Channel {
         const std::vector<int>& getModerators() const;
         const std::vector<std::string>& getBansList() const;
         const std::vector<std::string>& getInvitedList() const;
+        bool  is_moderator(int fd) const ;
         const bool& getInvitedMode() const;
         const bool& getTopicMode() const;
         const bool& getPrivate() const;

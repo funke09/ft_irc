@@ -40,7 +40,7 @@ void Client::set_topicMode(bool topicMode)
     this->topicMode = topicMode;
 }
 
-int Client::get_socket_client()
+int Client::get_socket_client() const
 {
     return (this->socket_client);
 }

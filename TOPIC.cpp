@@ -1,14 +1,28 @@
 #include "headerfile.hpp"
+static std::vector<std::string> ft_split(const std::string& str, char delimiter)
+{
+    std::vector<std::string> tokens;
+    std::stringstream ss(str);
+    std::string token;
 
+    while (std::getline(ss, token, delimiter))
+    {
+        tokens.push_back(token);
+    }
+
+    return tokens;
+}
 
 std::string Server::parss_topic(std::string buffer , Client &client) {
         std::vector<std::string> tokens;
+        std::vector<std::string> split = ft_split(buffer, ' ');
         std::string response;
       
         std::string channel_name;
 
         // Split the input buffer into tokens using ' ' (space) as the delimiter
-        if (!buffer.empty() && client.get_topicMode()) {
+        if ((!buffer.empty() && client.get_topicMode()) || (!buffer.empty() && this->_channels[getChannel(split[1])].is_moderator(client.get_socket_client())))
+        {
             size_t start = 0;
             size_t end = 0;
             while ((end = buffer.find(' ', start)) != std::string::npos) {

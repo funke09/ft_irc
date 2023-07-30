@@ -75,8 +75,11 @@ class Server
     std::string parss_topic(std::string buffer , Client &client);
     bool ChanmodeExists(std::vector<Channel> channels, std::string& targetName);
     std::string	invite(std::vector<std::string> input, Client &client);
+    
 };
 
+
+std::string get_users_in_channel(Channel channel, std::vector<Client> clients);
 int findClientSocket(const std::vector<Client>& clients, const Client& targetClient);
 std::string get_adderss();
 

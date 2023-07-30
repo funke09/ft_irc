@@ -80,6 +80,36 @@ bool Server::isOnChannel(const std::vector<std::string>& channels, const std::st
     return false; 
 }
 
+std::string get_users_in_channel(Channel channel, std::vector<Client> clients)
+{
+	std::string result = "";
+	std::vector<int> members = channel.getMembers();
+	std::vector<int> moderators = channel.getModerators();
+	std::vector<Client>::const_iterator it;
+	std::vector<int>::const_iterator i;
+	std::vector<int>::const_iterator j;
+	
+    for (it = clients.begin(); it != clients.end(); ++it)
+    {
+        for (i = members.begin(); i != members.end(); i++)
+		{
+			if (it->get_socket_client() == *i)
+			{
+				for(j = moderators.begin(); j != moderators.end(); j++)
+				{
+					if (it->get_socket_client() == *j)
+						result = result + "@" + it->get_nickname() + " ";
+					else
+						result = result + it->get_nickname() + " ";
+				}
+
+			}
+		}
+	}
+	return (result);
+}
+
+
 std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 {
     Channel chan;
@@ -117,7 +147,7 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 					chan.set_creationTime(ft_time());
 					_channels.push_back(chan);
 					response = ":" + client.get_nickname() + "!~" + client.get_username() + "@localhost" + " JOIN " + names[i] + "\r\n"
-          			+ ":localhost" + " 353 " + client.get_nickname() + " = " + names[i] + " :@" + client.get_nickname() + "\r\n"
+					+ ":localhost" + " 353 " + client.get_nickname() + " = " + names[i] + " :" + get_users_in_channel(_channels[getChannel(names[i])], this->clients) + "\r\n"
           			+ ":localhost" + " 366 " + client.get_nickname() + " " +  names[i] + " :End of /NAMES list.\r\n";
 					send(client.get_socket_client(), response.c_str(), response.length(), 0);
 				}
@@ -131,11 +161,15 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 					}
 					else if(_channels[getChannel(names[i])].getInvitedMode())
 					{
+						
 						if(_channels[getChannel(names[i])].isInvited(client.get_nickname()))
 						{
+
 							client.set_channel(names[i]);
 							_channels[getChannel(names[i])].addMember(client.get_socket_client());
-							response = ":" + client.get_nickname() + "!~" + client.get_username() + "@" + get_adderss() + " JOIN :" + names[i] + "\r\n";
+							response = ":" + client.get_nickname() + "!~" + client.get_username() + "@" + get_adderss() + " JOIN :" + names[i] + "\r\n"
+							+ ":localhost" + " 353 " + client.get_nickname() + " = " + names[i] + " :" + get_users_in_channel(_channels[getChannel(names[i])], this->clients) + "\r\n"
+          					+ ":localhost" + " 366 " + client.get_nickname() + " " +  names[i] + " :End of /NAMES list.\r\n";
 							_channels[getChannel(names[i])].broadcast_message(response, 0);
 							// send(client.get_socket_client(), response.c_str(), response.length(), 0);
 						}
@@ -153,7 +187,9 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 							{
 								client.set_channel(names[i]);
 								_channels[getChannel(names[i])].addMember(client.get_socket_client());
-								response = ":" + client.get_nickname() + "!~" + client.get_username() + " JOIN :" + names[i] + "\r\n";
+								response = ":" + client.get_nickname() + "!~" + client.get_username() + " JOIN :" + names[i] + "\r\n"
+								+ ":localhost" + " 353 " + client.get_nickname() + " = " + names[i] + " :" + get_users_in_channel(_channels[getChannel(names[i])], this->clients) + "\r\n"
+          						+ ":localhost" + " 366 " + client.get_nickname() + " " +  names[i] + " :End of /NAMES list.\r\n";
 								_channels[getChannel(names[i])].broadcast_message(response, 0);
 							}
 							else
@@ -168,7 +204,9 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 							{
 								client.set_channel(names[i]);
 								_channels[getChannel(names[i])].addMember(client.get_socket_client());
-								response = ":" + client.get_nickname() + "!~" + client.get_username() + " JOIN :" + names[i] + "\r\n";
+								response = ":" + client.get_nickname() + "!~" + client.get_username() + " JOIN :" + names[i] + "\r\n"
+								+ ":localhost" + " 353 " + client.get_nickname() + " = " + names[i] + " :" + get_users_in_channel(_channels[getChannel(names[i])], this->clients) + "\r\n"
+          						+ ":localhost" + " 366 " + client.get_nickname() + " " +  names[i] + " :End of /NAMES list.\r\n";
 								_channels[getChannel(names[i])].broadcast_message(response, 0);
 							}
 							else

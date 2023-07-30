@@ -24,7 +24,7 @@ int getclientFd(std::vector<Client> clients, std::string nickname)
 
 std::string	Server::invite(std::vector<std::string> input, Client &client)
 {
-	Channel chan;
+	Channel &chan = this->_channels[isChannelInVector(this->_channels, input[1])];
     int clientFd;
 	std::vector<Channel>::iterator it;
 

@@ -36,7 +36,7 @@ class Client
     Client();
     ~Client();
     Client(int socket_client);
-    int get_socket_client();
+    int get_socket_client() const;
     std::string get_username();
     std::string get_nickname() const;
     std::string get_realname();
