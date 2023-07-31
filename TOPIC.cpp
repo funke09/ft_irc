@@ -30,15 +30,8 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                 start = end + 1;
             }
             tokens.push_back(buffer.substr(start));
-            std::vector<std::string>::iterator it;
-            for(it = tokens.begin(); it != tokens.end(); it++)
-            {
-                std::cout<< "TOKENZ == " << *it << std::endl;
-            }
-            
             if (tokens.size() >= 2 && tokens[0] == "TOPIC" && tokens[1][0] == '#' && tokens[1].size() > 1) 
             {
-                    // erase_charcter(tokens[1], '#');
                     channel_name = tokens[1]; // Remove '#' from the channel name
                 // set topic for channel
                 if (tokens.size() == 3 && tokens[2][0] == ':' && (tokens[2][1] != '\r' || tokens[2][1] != '\n') && tokens[2][1] != '\0')
@@ -68,8 +61,6 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                 else if (tokens.size() == 3 && tokens[2][0] == ':' && ( tokens[2][1] == '\r' || tokens[2][1] == '\n' || tokens[2][1] == '\0'))
                 {
                     // Topic is unset
-                    // _name = channel_name;
-            
                     this->_channels[getChannel(channel_name)].setTopic("");
                     response = "Topic unset for channel " + channel_name + "\r\n";
                 }
