@@ -15,6 +15,8 @@
 #include <map>
 #include <cctype>
 #include <netdb.h>
+#include <fcntl.h>
+
 
 
 #include "Message.hpp"

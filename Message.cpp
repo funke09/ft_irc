@@ -161,7 +161,7 @@ std::string Message::parss_password(std::string password, std::string buffer, st
             return ("");
         }
     }
-    return ("Not authenticated\r\n");
+    return ("\r\n");
 }
 
 
