@@ -30,12 +30,19 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                 start = end + 1;
             }
             tokens.push_back(buffer.substr(start));
+            std::vector<std::string>::iterator it;
+            for(it = tokens.begin(); it != tokens.end(); it++)
+            {
+                std::cout<< "TOKENZ == " << *it << std::endl;
+            }
+            
             if (tokens.size() >= 2 && tokens[0] == "TOPIC" && tokens[1][0] == '#' && tokens[1].size() > 1) 
             {
                     // erase_charcter(tokens[1], '#');
                     channel_name = tokens[1]; // Remove '#' from the channel name
                 // set topic for channel
-                if (tokens.size() == 3 && tokens[2][0] == ':' && (tokens[2][1] != '\r' || tokens[2][1] != '\n') && tokens[2][1] != '\0') {
+                if (tokens.size() == 3 && tokens[2][0] == ':' && (tokens[2][1] != '\r' || tokens[2][1] != '\n') && tokens[2][1] != '\0')
+                {
                     // Topic is set
                     std::string topic = tokens[2].substr(1); // Remove ':' from the topic
 
@@ -52,12 +59,14 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                             response = ":localhost (442) ERR_NOTONCHANNEL: " + channel_name + " :You're not on that channel\r\n";
                         }
                     } 
-                    else {
+                    else 
+                    {
                         response = ":localhost (403) ERR_NOSUCHCHANNEL: " + channel_name + " :No such channel\r\n";
                     }
                 }
                 // unset topic for channel 
-                else if (tokens.size() == 3 && tokens[2][0] == ':' && ( tokens[2][1] == '\r' || tokens[2][1] == '\n' || tokens[2][1] == '\0')){
+                else if (tokens.size() == 3 && tokens[2][0] == ':' && ( tokens[2][1] == '\r' || tokens[2][1] == '\n' || tokens[2][1] == '\0'))
+                {
                     // Topic is unset
                     // _name = channel_name;
             

@@ -233,6 +233,8 @@ void Server::handel_message(char *buff, Message *user)
         response = privmsg(buffer, user->get_client());
     else if(input[0] == "TOPIC")
         response = parss_topic(buffer, user->get_client());
+    else if(input[0] == "KICK")
+        response = kick(buffer, user->get_client());
     else if(input[0] == "PRIVMSG")
         response = privmsg(buffer, user->get_client());
     else if(input[0] == "INVITE")

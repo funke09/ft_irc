@@ -113,6 +113,16 @@ bool  Channel::is_moderator(int fd) const
         return false;
 }
 
+bool Channel::is_member(int fd)
+{
+    for(size_t i = 0; i < this->_members.size(); i++)
+    {
+        if(_members[i] == fd)
+            return true;
+    }
+    return false;
+}
+
 
 void Channel::set_creationTime(std::string time)
 {

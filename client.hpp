@@ -30,6 +30,7 @@ class Client
     bool pass;
     std::vector<std::string> channels;
     bool topicMode;
+    bool kicked;
 
     public:
 
@@ -54,6 +55,9 @@ class Client
     std::vector<std::string> get_channels();
     bool get_topicMode();
     void set_topicMode(bool topicMode);
+    bool get_kicked();
+    void set_kicked(bool var);
+    void remove_channel(std::string channel);
 
 };
 bool operator==(const Client& lhs, const Client& rhs);

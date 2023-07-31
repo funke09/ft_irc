@@ -48,6 +48,7 @@ class Server
     std::vector<Channel> _channels;
     // Client client;
 
+
     public:
     Server();
     Server(int port, std::string password);
@@ -75,6 +76,7 @@ class Server
     std::string parss_topic(std::string buffer , Client &client);
     bool ChanmodeExists(std::vector<Channel> channels, std::string& targetName);
     std::string	invite(std::vector<std::string> input, Client &client);
+    std::string kick(std::string input, Client &client);
     
 };
 

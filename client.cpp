@@ -10,6 +10,7 @@ Client::Client()
     this->nick = false;
     this->pass = false;  
     this->topicMode = false;
+    this->kicked = false;
 }
 
 Client::~Client()
@@ -28,6 +29,7 @@ Client::Client(int socket_client)
     this->nick = false;
     this->pass = false;
     this->topicMode = false;
+    this->kicked = false;
 }
 
 bool Client::get_topicMode()
@@ -65,6 +67,11 @@ bool Client::get_user()
     return (this->user);
 }
 
+bool Client::get_kicked()
+{
+    return(this->kicked);
+}
+
 bool Client::get_nick()
 {
     return (this->nick);
@@ -80,6 +87,24 @@ std::vector<std::string> Client::get_channels()
     return this->channels;
 }
 
+
+void Client::remove_channel(std::string channel)
+{
+    std::vector<std::string>::iterator it;
+    for(it = this->channels.begin(); it != this->channels.end(); it++)
+    {
+        if(*it == channel)
+        {
+            this->channels.erase(it);
+            break;
+        }
+    }
+}
+
+void Client::set_kicked(bool var)
+{
+    this->kicked = var;
+}
 
 void Client::set_user(std::string user, bool user_stat)
 {
