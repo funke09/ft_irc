@@ -215,6 +215,17 @@ void Server::accept_socket(void) {
 }
 
 
+std::string toUpperCase(const std::string& str) {
+    std::string result = str;
+
+    for (size_t i = 0; i < str.length(); ++i) {
+        result[i] = std::toupper(str[i]);
+    }
+
+    return result;
+}
+
+
 void Server::handel_message(char *buff, Message *user)
 {
     std::string buffer(buff);
@@ -226,22 +237,21 @@ void Server::handel_message(char *buff, Message *user)
     erase_charcter(buffer, '\r');
     input = ft_split(buffer, ' ');
     response = user->parss_password(password, buffer, this->clients);
-    if(input[0] == "JOIN")
+    if(toUpperCase(input[0]) == "JOIN")
         response = joinChannel(input, user->get_client());
-    else if(input[0] == "MODE")
+    else if(toUpperCase(input[0]) == "MODE")
         response = mode_response(input, user->get_client()); 
-    else if(input[0] == "PRIVMSG")
+    else if(toUpperCase(input[0]) == "PRIVMSG")
         response = privmsg(buffer, user->get_client());
-    else if(input[0] == "TOPIC")
+    else if(toUpperCase(input[0]) == "TOPIC")
         response = parss_topic(buffer, user->get_client());
-    else if(input[0] == "KICK")
+    else if(toUpperCase(input[0]) == "KICK")
         response = kick(buffer, user->get_client());
-    else if(input[0] == "PRIVMSG")
+    else if(toUpperCase(input[0]) == "PRIVMSG")
         response = privmsg(buffer, user->get_client());
-    else if(input[0] == "INVITE")
+    else if(toUpperCase(input[0]) == "INVITE")
         response = invite(input, user->get_client());
     if (response.length()){
-        std::cout<<response<<std::endl;
         int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);
         if(bit == -1)
         {
