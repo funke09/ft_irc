@@ -50,11 +50,13 @@ std::string Server::kick(std::string input, Client &client)
                 {
                     if(this->_channels[getChannel(channel_name)].is_member(to_kick))
                     {
-                        this->_channels[getChannel(channel_name)].removeMember(to_kick);
+                        
                         client.remove_channel(channel_name);
                         this->_channels[getChannel(channel_name)].addBan(nickname);
                         // client.set_kicked(true);
                         response = ":" + client.get_nickname() + " KICK " + channel_name + " " + nickname + " :" + reason + "\r\n";
+                        this->_channels[getChannel(channel_name)].broadcast_message(response, client.get_socket_client());
+                        this->_channels[getChannel(channel_name)].removeMember(to_kick);
                     }
                     else
                     {
