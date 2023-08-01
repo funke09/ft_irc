@@ -20,8 +20,13 @@ std::string Server::kick(std::string input, Client &client)
     std::string reason;
     int to_kick;
 
+    if(!client.get_isRegistred())
+    {
+        response = ":localhost (451) ERR_NOTREGISTERED :You have not registered\r\n";
+        return (response);
+    }
     // Split the input buffer into tokens using ' ' (space) as the delimiter
-    if(!input.empty() )
+    if(!input.empty())
     {
         size_t start = 0;
         size_t end = 0;

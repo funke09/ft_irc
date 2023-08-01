@@ -114,6 +114,8 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 {
     Channel chan;
 
+	if(!client.get_isRegistred())
+            return (":localhost (451) ERR_NOTREGISTERED :You have not registered\r\n");
     if(pars.size() == 1 || (pars.size() == 2 && pars[1] == "#"))
 		return(":localhost 461 " + client.get_nickname() + " " + pars[0] + " :Not enough parameters\r\n");
 	else if(pars.size() >= 2)

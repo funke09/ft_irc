@@ -186,24 +186,23 @@ void Server::accept_socket(void) {
                     memset(buffer, 0, 1024);
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
  
-                    if (bytes < 0) {
-                        // Client disconnected
-                        std::cout << "Client disconnected" << std::endl;
-                        close(fds[j].fd);
-                        fds[j].fd = -1;
+                    // if (bytes < 0) {
+                    //     // Client disconnected
+                    //     std::cout << "Client disconnected" << std::endl;
+                    //     close(fds[j].fd);
+                    //     fds[j].fd = -1;
 
-                        // // Remove client from the map
-                        // clientMap.erase(fds[j].fd);
-                    }
-                    if(bytes == 0)
+                    //     // // Remove client from the map
+                    // }
+                    if(bytes <= 0)
                     {
                         fds_num--;
                         close(fds[j].fd);
                         fds[j].fd = -1;
+                        // clientMap.erase(fds[j].fd);
                         this->clientMap.erase(flag);
                         std::cout << "Client disconnected" << std::endl;
                     }
-                    
                     else if (buffer[0] != '\n')
                     {
                         handel_message(buffer, &clientMap[flag]);
@@ -241,7 +240,7 @@ void Server::handel_message(char *buff, Message *user)
     else if(input[0] == "INVITE")
         response = invite(input, user->get_client());
     if (response.length()){
-        std::cout<<response<<std::endl;
+        // std::cout<<response<<std::endl;
         int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);
         if(bit == -1)
         {

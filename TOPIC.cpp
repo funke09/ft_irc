@@ -20,8 +20,20 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
       
         std::string channel_name;
 
+        if(!client.get_isRegistred())
+        {
+            response = ":localhost 451 ERR_NOTREGISTERED :You have not registered\r\n";
+            return (response);
+        }
+        if (split.size() == 1 || (split.size() == 2 && split[1][0] != '#'))
+        {
+            response = ":localhost 461 ERR_NEEDMOREPARAMS " + split[0] + " :Not enough parameters\r\n";
+            return (response);
+        }
+        if (!channelExists(this->_channels, split[1]))
+            response = ":localhost 403 ERR_NOSUCHCHANNEL " + split[1] + " :No such channel\r\n";
         // Split the input buffer into tokens using ' ' (space) as the delimiter
-        if ((!buffer.empty() && client.get_topicMode()) || (!buffer.empty() && this->_channels[getChannel(split[1])].is_moderator(client.get_socket_client())))
+        else if((!buffer.empty() && client.get_topicMode()) || (!buffer.empty() && this->_channels[getChannel(split[1])].is_moderator(client.get_socket_client())))
         {
             size_t start = 0;
             size_t end = 0;
@@ -32,14 +44,14 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
             tokens.push_back(buffer.substr(start));
             if (tokens.size() >= 2 && tokens[0] == "TOPIC" && tokens[1][0] == '#' && tokens[1].size() > 1) 
             {
-                    channel_name = tokens[1]; // Remove '#' from the channel name
+                channel_name = tokens[1]; // Remove '#' from the channel name
+                    
                 // set topic for channel
                 if (tokens.size() == 3 && tokens[2][0] == ':' && (tokens[2][1] != '\r' || tokens[2][1] != '\n') && tokens[2][1] != '\0')
                 {
                     // Topic is set
                     std::string topic = tokens[2].substr(1); // Remove ':' from the topic
 
-                    if (channelExists(this->_channels, channel_name)) {
 
                         if(isOnChannel(client.get_channels(), channel_name))
                         {
@@ -49,13 +61,8 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                         }
                         else
                         {
-                            response = ":localhost (442) ERR_NOTONCHANNEL: " + channel_name + " :You're not on that channel\r\n";
+                            response = ":localhost 442 ERR_NOTONCHANNEL " + channel_name + " :You're not on that channel\r\n";
                         }
-                    } 
-                    else 
-                    {
-                        response = ":localhost (403) ERR_NOSUCHCHANNEL: " + channel_name + " :No such channel\r\n";
-                    }
                 }
                 // unset topic for channel 
                 else if (tokens.size() == 3 && tokens[2][0] == ':' && ( tokens[2][1] == '\r' || tokens[2][1] == '\n' || tokens[2][1] == '\0'))
@@ -68,13 +75,11 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                 else 
                 {
                     if(this->_channels[getChannel(channel_name)].getTopic().size() == 0)
-                        response = ":localhost (331) RPL_NOTOPIC " + channel_name + " :No topic is set\r\n";
+                        response = ":localhost 331 RPL_NOTOPIC " + channel_name + " :No topic is set\r\n";
                     else
-                        response = ":localhost (332) RPL_TOPIC " + channel_name + " :" + this->_channels[getChannel(channel_name)].getTopic() + "\r\n";
+                        response = ":localhost 332 RPL_TOPIC " + channel_name + " :" + this->_channels[getChannel(channel_name)].getTopic() + "\r\n";
                 }
             } 
-            else 
-                response = ":localhost (461) ERR_NEEDMOREPARAMS :Not enough parameters\r\n";
         }
         else
             response = ":localhost (482) ERR_CHANOPRIVSNEEDED " + channel_name + " :You're not channel operator\r\n";
