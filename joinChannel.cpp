@@ -109,7 +109,6 @@ std::string get_users_in_channel(Channel channel, std::vector<Client> clients)
 	return (result);
 }
 
-
 std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 {
     Channel chan;
@@ -131,14 +130,12 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 		{
 			if(names[i][0] != '#')
 				return ":localhost 403 " + client.get_nickname() + " " + names[i] + " :No such channel\r\n";
-			else if(isOnChannel(client.get_channels(), pars[1]))
-				return ":localhost 443 " + client.get_username() + " " + names[i] + ":is already on channel\r\n";
+			else if(isOnChannel(client.get_channels(), pars[1]) && !(_channels[getChannel(names[i])].isBanned(client.get_nickname())))
+				return ":localhost 443 " + client.get_username() + " " + names[i] + " :is already on channel\r\n";
 			else
 			{
-				
 				if(!channelExists(this->_channels , names[i]))
 				{
-					
                     client.set_channel(names[i]);
 					if(key.size() > i)
 						chan = Channel(names[i], key[i]);
@@ -155,7 +152,12 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 				}
                 else
                 {
-					if(_channels[getChannel(names[i])].get_limitMode() && _channels[getChannel(names[i])].get_limit() <= static_cast<int>(_channels[getChannel(names[i])].getMembers().size()))
+					if (_channels[getChannel(names[i])].isBanned(client.get_nickname()))
+					{
+						response = ":localhost 474 " + client.get_nickname() + " " + names[i] + " :Cannot join channel (+b)\r\n";
+						send(client.get_socket_client(), response.c_str(), response.length(), 0);
+					}
+					else if(_channels[getChannel(names[i])].get_limitMode() && _channels[getChannel(names[i])].get_limit() <= static_cast<int>(_channels[getChannel(names[i])].getMembers().size()))
 					{
 						response = ":localhost 471 " + client.get_nickname() + " " + names[i] + " :Cannot join channel (+l)\r\n";
 						send(client.get_socket_client(), response.c_str(), response.length(), 0);

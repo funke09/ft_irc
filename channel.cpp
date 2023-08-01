@@ -254,14 +254,14 @@ bool Channel::isInvited(std::string client)
 	return false;
 }
 
-bool Channel::isBanned(Client *client) const
+bool Channel::isBanned(std::string nickname)
 {
-    for (size_t i = 0; i < _bans_list.size(); i++)
+    if (_bans_list.size() < 1)
+        return false;
+    for (size_t i = 0; i < this->_bans_list.size(); ++i)
     {
-        if (_bans_list[i] == client->get_nickname())
-        {
+        if (_bans_list[i] == nickname)
             return true;
-        }
     }
     return false;
 }

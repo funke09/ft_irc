@@ -86,7 +86,7 @@ class Channel {
         bool isInvited(std::string client);
         void setOperator(Client *client);
         bool validateJoin(Client *client, std::string key);
-        bool isBanned(Client *client) const;
+        bool isBanned(std::string nick);
         ~Channel();
 
         // std::string parss_topic(std::string buffer, Client &client);
