@@ -79,6 +79,8 @@ class Server
     bool ChanmodeExists(std::vector<Channel> channels, std::string& targetName);
     std::string	invite(std::vector<std::string> input, Client &client);
     std::string kick(std::string input, Client &client);
+
+    std::string bot(Client &client);
     
 };
 
