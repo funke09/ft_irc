@@ -219,7 +219,6 @@ void Server::handel_message(char *buff, Message *user)
     std::string buffer(buff);
     std::string response = "";
     std::vector<std::string> input;
-    // Channel chan;
 
     erase_charcter(buffer, '\n');
     erase_charcter(buffer, '\r');
@@ -240,7 +239,6 @@ void Server::handel_message(char *buff, Message *user)
     else if(input[0] == "INVITE")
         response = invite(input, user->get_client());
     if (response.length()){
-        // std::cout<<response<<std::endl;
         int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);
         if(bit == -1)
         {

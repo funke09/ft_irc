@@ -50,7 +50,8 @@ std::string Server::parss_topic(std::string buffer , Client &client) {
                 if (tokens.size() == 3 && tokens[2][0] == ':' && (tokens[2][1] != '\r' || tokens[2][1] != '\n') && tokens[2][1] != '\0')
                 {
                     // Topic is set
-                    std::string topic = tokens[2].substr(1); // Remove ':' from the topic
+                    erase_charcter(tokens[2], ':');
+                    std::string topic = tokens[2]; // Remove ':' from the topic
 
 
                         if(isOnChannel(client.get_channels(), channel_name))
