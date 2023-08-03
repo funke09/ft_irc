@@ -71,7 +71,7 @@ class Server
     std::string joinChannel(std::vector<std::string> pars, Client& client);
     std::string ft_time(void);
     int getChannel(std::string channelName);
-    bool isOnChannel(const std::vector<std::string>& channels, const std::string& input);
+    bool isOnChannel(const Channel channel, const int client_fd);
     bool channelExists(std::vector<Channel> channels, std::string& targetName);
     std::vector<Channel> getChannelsVector();
     bool OnChannel(const std::vector<std::string>& channels, const std::string& input);

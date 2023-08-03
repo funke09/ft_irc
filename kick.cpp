@@ -48,7 +48,7 @@ std::string Server::kick(std::string input, Client &client)
                 response = ":localhost (482) ERR_CHANOPRIVSNEEDED " + nickname + " :You're not channel operator\r\n";
                 // return(response);
             }
-            else if(isOnChannel(client.get_channels(), channel_name))
+            else if(isOnChannel(this->_channels[getChannel(channel_name)], client.get_socket_client()))
             {
                 to_kick = verify_to_kick(nickname, this->clients);
                 if(to_kick != -1)

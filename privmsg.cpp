@@ -26,20 +26,26 @@ static std::vector<std::string> ft_split(const std::string& str, char delimiter)
     return tokens;
 }
 
-static void 	split_command(std::string buff, std::vector<std::string> &split)
+static void split_command(const std::string& buff, std::vector<std::string>& split)
 {
-	std::vector<std::string> tmp;
-	size_t pos = buff.find(":");
-	if (pos != std::string::npos){
-		tmp.push_back(buff.substr(0, pos));
-		tmp.push_back(buff.substr(pos + 1));
-	}
-	else
-		tmp.push_back(buff);
-	split = ft_split(tmp[0], ' ');
-	if (tmp.size() > 1)
-		split.push_back(tmp[1]);
+    size_t pos = buff.find(":");
+    if (pos != std::string::npos) {
+        std::string part_before = buff.substr(0, pos);
+        std::string part_after = buff.substr(pos + 1);
+
+        // Split the part before ':' by space character
+        std::vector<std::string> tmp = ft_split(part_before, ' ');
+
+        // Append the part after ':' to the split vector
+        tmp.push_back(part_after);
+
+        split = tmp;
+    } else {
+        // No ':' found, split the whole string by space character
+        split = ft_split(buff, ' ');
+    }
 }
+
 
 
 std::string		Server::privmsg(std::string buff, Client &client)

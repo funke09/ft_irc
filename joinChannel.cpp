@@ -66,18 +66,14 @@ bool Server::channelExists(std::vector<Channel> channels, std::string& targetNam
     return false;
 }
 
-bool Server::isOnChannel(const std::vector<std::string>& channels, const std::string& input)
+bool Server::isOnChannel(const Channel channel, const int client_fd)
 {
-    for (size_t i = 0; i < channels.size(); i++)
-    {
-		
-        if (channels[i] == input)
-        {
-
-            return true; 
-        }
-    }
-    return false; 
+    for (std::vector<int>::const_iterator it = channel.getMembers().begin(); it != channel.getMembers().end(); ++it)
+	    {
+	        if (*it == client_fd)
+	            return true;
+	    }
+	    return false;
 }
 
 std::string get_users_in_channel(Channel channel, std::vector<Client> clients)
@@ -109,6 +105,20 @@ std::string get_users_in_channel(Channel channel, std::vector<Client> clients)
 	return (result);
 }
 
+static bool check_channel(const std::vector<std::string>& channels, const std::string& input)
+{
+    for (size_t i = 0; i < channels.size(); i++)
+    {
+		
+        if (channels[i] == input)
+        {
+
+            return true; 
+        }
+    }
+    return false; 
+}
+
 std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 {
     Channel chan;
@@ -130,7 +140,7 @@ std::string Server::joinChannel(std::vector<std::string> pars, Client& client)
 		{
 			if(names[i][0] != '#')
 				return ":localhost 403 " + client.get_nickname() + " " + names[i] + " :No such channel\r\n";
-			else if(isOnChannel(client.get_channels(), pars[1]) && !(_channels[getChannel(names[i])].isBanned(client.get_nickname())))
+			else if(check_channel(client.get_channels(), pars[1]) && !(_channels[getChannel(names[i])].isBanned(client.get_nickname())))
 				return ":localhost 443 " + client.get_username() + " " + names[i] + " :is already on channel\r\n";
 			else
 			{

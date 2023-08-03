@@ -246,13 +246,12 @@ void Server::handel_message(char *buff, Message *user)
         response = parss_topic(buffer, user->get_client());
     else if(toUpperCase(input[0]) == "KICK")
         response = kick(buffer, user->get_client());
-    else if(toUpperCase(input[0]) == "PRIVMSG")
-        response = privmsg(buffer, user->get_client());
     else if(toUpperCase(input[0]) == "INVITE")
         response = invite(input, user->get_client());
     else if(toUpperCase(input[0]) == "/BOT")
         response = bot(user->get_client());
-    if (response.length()){
+    if (response.length())
+    {
         int bit = send(user->get_client().get_socket_client(), response.c_str(), response.length(), 0);
         if(bit == -1)
         {
