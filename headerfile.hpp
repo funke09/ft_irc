@@ -88,5 +88,6 @@ class Server
 std::string get_users_in_channel(Channel channel, std::vector<Client> clients);
 int findClientSocket(const std::vector<Client>& clients, const Client& targetClient);
 std::string get_adderss();
+int getclientFd(std::vector<Client> clients, std::string nickname);
 
 #endif

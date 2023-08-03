@@ -153,10 +153,12 @@ void Server::accept_socket(void) {
             return;
         }
         fcntl(this->socket_fd, F_SETFL, O_NONBLOCK);
-        for (int j = 0; j < fds_num; j++) {
-            if (fds[j].revents & POLLIN) {
-                if (fds[j].fd == this->socket_fd) {
-                    
+        for (int j = 0; j < fds_num; j++) 
+        {
+            if (fds[j].revents & POLLIN) 
+            {
+                if (fds[j].fd == this->socket_fd) 
+                {
                     // Accept new client connection
                     if ((client_fd = accept(this->socket_fd, (struct sockaddr*)&serverAddress, (socklen_t*)&i)) == -1) {
                         std::cout << "Failed to accept connection" << std::endl;
@@ -187,9 +189,21 @@ void Server::accept_socket(void) {
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
  
                     if (bytes == 0) {
+                        // std::cout << "Client disconnected00" << std::endl;
+                        // std::vector<Client>::iterator it;
+                        // for(it = clients.begin(); it != clients.end(); it++)
+                        // {
+                        //     if(it->get_socket_client() == fds[j].fd)
+                        //     {
+                        //         // fds_num--;
+                        //         // close(fds[j].fd);
+                        //         // fds[j].fd = -1;
+                        //         clients.erase(it);
+                        //         break;
+                        //     }
+                        // }
                         continue;
                         // Client disconnected
-                        // std::cout << "Client disconnected" << std::endl;
                         // close(fds[j].fd);
                         // fds[j].fd = -1;
                         // this->clientMap.erase(flag);
@@ -202,6 +216,8 @@ void Server::accept_socket(void) {
                         close(fds[j].fd);
                         fds[j].fd = -1;
                         // clienPASStMap.erase(fds[j].fd);
+                        // remove client from this->clients
+                        
                         std::cout << "Client disconnected" << std::endl;
                     }
                     else if (buffer[0] != '\n')

@@ -287,7 +287,7 @@ int isChannelInVector(const std::vector<Channel>& channels, const std::string& t
         }
         i++;
     }
-    return (0);
+    return (-1);
 }
 
 void Channel::broadcast_message(std::string message, int fd)
