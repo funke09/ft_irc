@@ -62,13 +62,13 @@ std::string		Server::privmsg(std::string buff, Client &client)
 		return (client.get_socket_client(), ":" + client.get_nickname() + " 412 PRIVMSG :No text to send\r\n");
 	else
 	{
-		recipient = ft_split(split[1], ','); //split recipient
+		recipient = ft_split(split[1], ',');
 		std::vector<std::string>::iterator it = recipient.begin();
 		for(; it != recipient.end(); it++)
 		{
 			if (channelExists(this->_channels, *it))
 				this->_channels[getChannel(*it)].broadcast_message(":" + client.get_nickname() + " PRIVMSG " + *it + " :" + split[2] + "\r\n", client.get_socket_client());
-			if (getclientFd(this->clients, *it) != 0)
+			else if (getclientFd(this->clients, *it) != 0)
 			{
 				std::string tmp = ":" + client.get_nickname() + " PRIVMSG " + *it + " :" + split[2] + "\r\n";
 				send(findClientSocket(this->clients, *it), tmp.c_str(), tmp.size(), 0);
