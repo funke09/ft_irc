@@ -40,7 +40,7 @@ int Server::getChannel(std::string channelName)
         if (_channels[i].getName() == channelName)
             return i;
     }
-    return 0;
+    return -1;
 }
 
 bool Server::ChanmodeExists(std::vector<Channel> channels, std::string& targetName)
