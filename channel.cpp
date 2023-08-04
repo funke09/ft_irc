@@ -113,6 +113,7 @@ bool  Channel::is_moderator(int fd) const
         return false;
 }
 
+
 bool Channel::is_member(int fd)
 {
     for(size_t i = 0; i < this->_members.size(); i++)
@@ -123,6 +124,29 @@ bool Channel::is_member(int fd)
     return false;
 }
 
+void Channel::erase_member(int fd)
+{
+    for (std::vector<int>::iterator it = _members.begin(); it != _members.end(); ++it)
+    {
+        if (*it == fd)
+        {
+            _members.erase(it);
+            break;
+        }
+    }
+}
+
+void Channel::erase_moderator(int fd)
+{
+    for (std::vector<int>::iterator it = _moderators.begin(); it != _moderators.end(); ++it)
+    {
+        if (*it == fd)
+        {
+            _moderators.erase(it);
+            break;
+        }
+    }
+}
 
 void Channel::set_creationTime(std::string time)
 {

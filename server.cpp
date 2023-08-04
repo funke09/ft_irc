@@ -220,6 +220,18 @@ void Server::accept_socket(void) {
                             }
 
                         }
+                        std::vector<Channel>::iterator it1;
+                        if(_channels.size())
+                        {
+                            for(it1 = _channels.begin(); it1 < _channels.end(); it1++)
+                            {
+                                if(it1->is_moderator(fds[j].fd)) 
+                                    it1->erase_moderator(fds[j].fd);
+                                else if (it1->is_member(fds[j].fd))
+                                    it1->erase_member(fds[j].fd);
+                            }
+
+                        }
                         close(fds[j].fd);
                         std::cout << "client disconnect" << std::endl;
                     } 

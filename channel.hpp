@@ -71,6 +71,9 @@ class Channel {
         void set_creationTime(std::string time);
         void setLimit(int limit);
         void setMode(std::string mode);
+        void erase_member(int fd);
+        void erase_moderator(int fd);
+
 
         void addMember(int memberId);
         void removeMember(int memberId);
