@@ -37,21 +37,26 @@ std::string Server::kick(std::string input, Client &client)
         tokens.push_back(input.substr(start));
         channel_name = tokens[1];
         nickname = tokens[2];
-        if(tokens.size() == 4)
-            reason = tokens[3];
+        if(tokens.size() >= 4)
+        {
+            for (size_t i = 4 ; i < tokens.size() ; i++)
+                reason = reason + tokens[i] + " ";
+        }
         else
             reason = "";
         if(channelExists(this->_channels, channel_name))
         {
             if(!this->_channels[getChannel(channel_name)].is_moderator(client.get_socket_client()))
             {
-                response = ":localhost (482) ERR_CHANOPRIVSNEEDED " + nickname + " :You're not channel operator\r\n";
+                response = ":localhost (482) ERR_CHANOPRIVSNEEDED " + client.get_nickname() + " :You're not channel operator\r\n";
                 // return(response);
             }
             else if(isOnChannel(this->_channels[getChannel(channel_name)], client.get_socket_client()))
             {
                 to_kick = verify_to_kick(nickname, this->clients);
-                if(to_kick != -1)
+                if (this->_channels[getChannel(channel_name)].is_moderator(to_kick))
+                    response = ":localhost (512) ERR_CANNOT_KICK_SELF " + nickname + " :You can't kick yourself\r\n";
+                else if(to_kick != -1)
                 {
                     if(this->_channels[getChannel(channel_name)].is_member(to_kick))
                     {

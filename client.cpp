@@ -31,6 +31,16 @@ Client::Client(int socket_client)
     this->topicMode = false;
     this->kicked = false;
     this->newbuffer = "";
+    this->hostname = get_host();
+}
+
+std::string Client::get_host()
+{
+    char buffer[256];
+
+    if (gethostname(buffer, sizeof(buffer)) == 0)
+        return std::string(buffer);
+    return ("localhost");
 }
 
 bool Client::get_topicMode()

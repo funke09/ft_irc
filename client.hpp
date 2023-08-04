@@ -31,6 +31,7 @@ class Client
     std::vector<std::string> channels;
     bool topicMode;
     bool kicked;
+    std::string hostname;
 
     std::string newbuffer;
 
@@ -43,6 +44,8 @@ class Client
     std::string get_username();
     std::string get_nickname() const;
     std::string get_realname();
+    std::string get_host();
+
     bool get_isRegistred();
     bool get_user();
     bool get_nick();
