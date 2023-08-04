@@ -225,10 +225,12 @@ void Server::accept_socket(void) {
                         {
                             for(it1 = _channels.begin(); it1 < _channels.end(); it1++)
                             {
-                                if(it1->is_moderator(fds[j].fd)) 
+                                if(it1->is_moderator(fds[j].fd))
                                     it1->erase_moderator(fds[j].fd);
-                                else if (it1->is_member(fds[j].fd))
+                                if (it1->is_member(fds[j].fd))
                                     it1->erase_member(fds[j].fd);
+                                if (it1->getMembers().empty())
+                                    _channels.erase(it1);
                             }
 
                         }
