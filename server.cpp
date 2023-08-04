@@ -1,7 +1,7 @@
 #include "headerfile.hpp"
 #include "channel.hpp"
 
-std::string newbuffer;
+// std::string newbuffer;
 
 Server::Server(int port, std::string password)
 {
@@ -205,7 +205,7 @@ void Server::accept_socket(void) {
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
                     // bool is_ctrl_d = false;
                     // bool is_ctrl_c = false;
-
+                    std::cout << "buuuuuufffff : " << buffer << std::endl;
                     if (bytes == 0) 
                     {
                         // is_ctrl_c = true;
@@ -216,7 +216,10 @@ void Server::accept_socket(void) {
                             for(it = clients.begin(); it < clients.end(); it++)
                             {
                                 if(it->get_socket_client() == fds[j].fd) 
+                                {
+                                    it->eraseBuffer();
                                     clients.erase(it);
+                                }
                             }
 
                         }
@@ -232,9 +235,8 @@ void Server::accept_socket(void) {
                                 if (it1->getMembers().empty())
                                     _channels.erase(it1);
                             }
-
                         }
-                        close(fds[j].fd);
+                        // close(fds[j].fd);
                         std::cout << "client disconnect" << std::endl;
                     } 
                     // else if (buffer[bytes - 1] != (char)10) 
@@ -248,8 +250,6 @@ void Server::accept_socket(void) {
                         fds_num--;
                         close(fds[j].fd);
                         fds[j].fd = -1;
-                    
-                        
                         std::cout << "nothing to read" << std::endl;
                     }
                     else if (buffer[0] != '\n')
@@ -290,16 +290,18 @@ void Server::handel_message(char *buff, Message *user)
     }
     if(new_line == false)
     {
-        newbuffer += buff;
-        std::cout << "new buffer : " << newbuffer << std::endl;
+        // newbuffer += buff;
+        user->get_client().set_newbuffer(buff);
+        std::cout << "new buffer : " << user->get_client().get_newbuffer() << std::endl;
         return;
     }
     else
     {
-        newbuffer += buff;
-        buffer = newbuffer;
+        // newbuffer += buff;
+        user->get_client().set_newbuffer(buff);
+        buffer = user->get_client().get_newbuffer();
         std::cout << "buffer : " << buffer << std::endl;
-        newbuffer.clear();
+        user->get_client().eraseBuffer();
     }
     std::string line = buffer;
     std::cout << "line : " << line << std::endl;

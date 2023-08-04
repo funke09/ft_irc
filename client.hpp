@@ -32,6 +32,8 @@ class Client
     bool topicMode;
     bool kicked;
 
+    std::string newbuffer;
+
     public:
 
     Client();
@@ -58,6 +60,10 @@ class Client
     bool get_kicked();
     void set_kicked(bool var);
     void remove_channel(std::string channel);
+
+    void set_newbuffer(std::string buffer);
+    std::string get_newbuffer();
+    void eraseBuffer();
 
 };
 bool operator==(const Client& lhs, const Client& rhs);

@@ -56,7 +56,7 @@ std::string Server::parss_topic(std::string buffer, Client &client) {
 		{
 		   topic = "";
 		   channel.setTopic(topic);
-		   response =":localhost 331 RPL_NOTOPIC " + channel_name + " :No topic is set\r\n";
+		   response =":localhost 331 RPL_NOTOPIC " + channel_name + " :unset topic.\r\n";
 		}
 		if(!topicStart)
 		{

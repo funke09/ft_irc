@@ -30,6 +30,7 @@ Client::Client(int socket_client)
     this->pass = false;
     this->topicMode = false;
     this->kicked = false;
+    this->newbuffer = "";
 }
 
 bool Client::get_topicMode()
@@ -87,6 +88,15 @@ std::vector<std::string> Client::get_channels()
     return this->channels;
 }
 
+void Client::set_newbuffer(std::string buffer)
+{
+    this->newbuffer += buffer;
+}
+
+std::string Client::get_newbuffer()
+{
+    return this->newbuffer;
+}
 
 void Client::remove_channel(std::string channel)
 {
@@ -143,34 +153,7 @@ void Client::set_real_name(std::string rl_name)
     this->real_name = rl_name;
 }
 
-std::ostream& operator<<(std::ostream& os, Client& client)
+void Client::eraseBuffer()
 {
-    os << "Username: " << client.get_username() << std::endl;
-    os << "Nickname: " << client.get_nickname() << std::endl;
-    os << "Real Name: " << client.get_realname() << std::endl;
-    os << "Socket Client: " << client.get_socket_client() << std::endl;
-    os << "Is Registered: " << (client.get_isRegistred() ? "Yes" : "No") << std::endl;
-    os << "User: " << (client.get_user() ? "Yes" : "No") << std::endl;
-    os << "Nick: " << (client.get_nick() ? "Yes" : "No") << std::endl;
-    os << "Pass: " << (client.get_pass() ? "Yes" : "No") << std::endl;
-    // os << "Channels: ";
-    // for (std::vector<std::string>::const_iterator it = client.channels.begin(); it != client.channels.end(); ++it)
-    // {
-    //     os << *it << " ";
-    // }
-    os << std::endl;
-
-    return os;
+    this->newbuffer.erase();
 }
-bool Client::check_command(std::string Command)
-{
-   if (Command != "PASS" && Command != "NICK"  \
-    && Command != "USER" && Command != "PRIVMSG" && Command != "NOTICE" && Command != "JOIN")
-        return false;
-    return true;
-}
-
-// bool operator==(const Client& lhs, const Client& rhs);
-// {
-//     return lhs.get_nickname() == rhs.get_nickname();
-// }
