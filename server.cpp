@@ -152,10 +152,44 @@ void Server::accept_socket(void) {
             close(this->socket_fd);
             return;
         }
-        fcntl(this->socket_fd, F_SETFL, O_NONBLOCK);
         for (int j = 0; j < fds_num; j++) 
         {
-            if (fds[j].revents & POLLIN) 
+            if(fds[j].events & POLLHUP && !(fds[j].events & POLLIN))
+            {
+                fds[j].events = 0;
+                std::vector<Client>::iterator it;
+                if(clients.size())
+                {
+                    for(it = clients.begin(); it < clients.end(); it++)
+                    {
+                        if(it->get_socket_client() == fds[j].fd)
+                        {
+                            // if(it->get_channels().size() >= 1)
+                            // {
+                            //     std::vector<std::string>::iterator chan;
+                            //     for (chan = it->get_channels().begin(); chan < it->get_channels().end(); chan++)
+                            //     {
+                            //         it->get_channels().erase(chan);
+                            //     }
+                            // }
+                            clients.erase(it);
+                        }
+                    }
+
+                }
+
+                // if(_channels.size())
+                // {
+                //     std::vector<Channel>::iterator member;
+                //     for(member = _channels.begin(); member < _channels.end(); member++)
+                //     {
+                        
+                //     }
+                // }
+                // event = 0;
+                // remove client from channels AND VECTOR when i try to login again donnot show already used or enregister
+            }
+            else if (fds[j].revents & POLLIN) 
             {
                 if (fds[j].fd == this->socket_fd) 
                 {
@@ -165,6 +199,7 @@ void Server::accept_socket(void) {
                         close(this->socket_fd);
                         return;
                     }
+                    fcntl(client_fd, F_SETFL, O_NONBLOCK);
 
                     // Check if maximum number of clients reached
                     if (fds_num == MAX_CLIENTS) {
@@ -189,36 +224,21 @@ void Server::accept_socket(void) {
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
  
                     if (bytes == 0) {
-                        // std::cout << "Client disconnected00" << std::endl;
-                        // std::vector<Client>::iterator it;
-                        // for(it = clients.begin(); it != clients.end(); it++)
-                        // {
-                        //     if(it->get_socket_client() == fds[j].fd)
-                        //     {
-                        //         // fds_num--;
-                        //         // close(fds[j].fd);
-                        //         // fds[j].fd = -1;
-                        //         clients.erase(it);
-                        //         break;
-                        //     }
-                        // }
-                        continue;
-                        // Client disconnected
-                        // close(fds[j].fd);
-                        // fds[j].fd = -1;
-                        // this->clientMap.erase(flag);
-
-                        // // Remove client from the map
+                        fds[j].events = 0;
+                        std::cout << "Ctrl-D pressed " << std::endl;
+                        std::string newbuffer(buffer);
+                        std::cout << "buffer : " << newbuffer << std::endl;
+                        // join the buffer and should not hung and should execute the command
+                        // waiting for char /r/n then join the buffer and should not hung and should execute the command 
                     }
                     else if(bytes < 0)
                     {
                         fds_num--;
                         close(fds[j].fd);
                         fds[j].fd = -1;
-                        // clienPASStMap.erase(fds[j].fd);
-                        // remove client from this->clients
+                    
                         
-                        std::cout << "Client disconnected" << std::endl;
+                        std::cout << "nothing to read" << std::endl;
                     }
                     else if (buffer[0] != '\n')
                     {
