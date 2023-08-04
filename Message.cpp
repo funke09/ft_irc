@@ -2,16 +2,12 @@
 
 Message::Message()
 {
-    // this->socket = 0;
-    // this->params = std::vector<std::string>();
-    // is_authenticated = false;
 }
 
 
 Message::Message(int socket)
 {
     this->socket = socket;
-    this->params = std::vector<std::string>();
     is_authenticated = false;
     this->client = Client(socket);
 }
@@ -25,35 +21,6 @@ int Message::get_socket()
     return (this->socket);
 }
 
-std::string Message::get_prefix()
-{
-    return (this->prefix);
-}
-
-std::string Message::get_command()
-{
-    return (this->command);
-}
-
-std::vector<std::string> Message::get_params()
-{
-    return (this->params);
-}
-
-void Message::set_prefix(std::string prefix)
-{
-    this->prefix = prefix;
-}
-
-void Message::set_command(std::string command)
-{
-    this->command = command;
-}
-
-void Message::set_params(std::vector<std::string> params)
-{
-    this->params = params;
-}
 static std::vector<std::string> ft_split(const std::string& str, char delimiter)
 {
     std::vector<std::string> tokens;

@@ -43,12 +43,8 @@ class Server
     struct sockaddr_in serverAddress;
     std::map<int, Message> clientMap;
     struct pollfd fds[MAX_CLIENTS];
-    
-    // struct sockaddr_in clientAddress;
-    // std::map<int, std::string> clients;
     std::vector<Client> clients;
     std::vector<Channel> _channels;
-    // Client client;
 
 
     public:
@@ -64,8 +60,6 @@ class Server
     int get_socket_fd();
     std::string get_password();
     void handel_message(char *buffer, Message *user);
-    int existe(int fd);
-    std::string send_intro_message();
     std::string privmsg(std::string buff, Client &client);
     std::string 	mode_response(std::vector<std::string> split, Client &client);
     std::string joinChannel(std::vector<std::string> pars, Client& client);
@@ -74,7 +68,6 @@ class Server
     bool isOnChannel(const Channel channel, const int client_fd);
     bool channelExists(std::vector<Channel> channels, std::string& targetName);
     std::vector<Channel> getChannelsVector();
-    bool OnChannel(const std::vector<std::string>& channels, const std::string& input);
     std::string parss_topic(std::string buffer , Client &client);
     bool ChanmodeExists(std::vector<Channel> channels, std::string& targetName);
     std::string	invite(std::vector<std::string> input, Client &client);

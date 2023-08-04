@@ -48,17 +48,13 @@ std::string Server::parss_topic(std::string buffer, Client &client) {
 		channel_name = split[1].substr(1); // Remove '#' from the channel name
 		if (topicStart != std::string::npos) {
 			// Extract the topic from the buffer
-		   topic = buffer.substr(topicStart + 1);
+		   	topic = buffer.substr(topicStart + 1);
+		   	if(topic.empty())
+		   		topic = "";
 			channel.setTopic(topic);
 			response = ":localhost 332 RPL_TOPIC " + channel_name + " :" + topic + "\r\n";
 		} 
-		else if(topicStart == std::string::npos)
-		{
-		   topic = "";
-		   channel.setTopic(topic);
-		   response =":localhost 331 RPL_NOTOPIC " + channel_name + " :unset topic.\r\n";
-		}
-		if(!topicStart)
+		if(topicStart == std::string::npos)
 		{
 			if(channel.getTopic().empty())
 				response = ":localhost 331 RPL_NOTOPIC " + channel_name + " :No topic is set\r\n";

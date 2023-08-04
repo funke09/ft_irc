@@ -37,7 +37,6 @@ int main(int ac, char **av)
     Server server(atoi(av[1]), av[2]);
     if(server.create_socket() == -1)
         return -1;
-    // ioctl();
     if(server.bind_socket() == -1)
         return -1;
     if(server.listen_socket() == -1)

@@ -1,13 +1,12 @@
 #include "headerfile.hpp"
 #include "channel.hpp"
 
-// std::string newbuffer;
+
 
 Server::Server(int port, std::string password)
 {
     this->port = port;
     this->password = password;
-    // std::cout << "from here "<<this->password << std::endl;
 }
 
 Server::Server()
@@ -98,27 +97,7 @@ int Server::listen_socket()
 }
 
 
-void removeNewline(std::string& str) {
-    if (!str.empty() && str[str.length() - 1] == '\n') {
-        str.erase(str.length() - 1);
-    }
-}
 
-int Server::existe(int fd)
-{
- 
-    std::vector<Client>::iterator it;
-    for(it = clients.begin(); it != clients.end(); it++)
-    {
-       if(it->get_socket_client() == fd)
-       {
-            std::cout << "existe" << std::endl;
-           return (1);
-       }
-    }
-    std::cout << "not existe" << std::endl;
-    return (0);
-}
 static std::vector<std::string> ft_split(const std::string& str, char delimiter)
 {
     std::vector<std::string> tokens;
@@ -138,7 +117,6 @@ static std::vector<std::string> ft_split(const std::string& str, char delimiter)
 void Server::accept_socket(void) {
     int fds_num;
     size_t i;
-     // Map to store client information
     std::vector<std::string> Channels;
     int user_id = 0;
 
@@ -156,22 +134,7 @@ void Server::accept_socket(void) {
         }
         for (int j = 0; j < fds_num; j++) 
         {
-            if(fds[j].revents & POLLHUP  && !(fds[j].revents & POLLIN) ) // && !(fds[j].events & POLLIN)
-            {
-               
-
-                // if(_channels.size())
-                // {
-                //     std::vector<Channel>::iterator member;
-                //     for(member = _channels.begin(); member < _channels.end(); member++)
-                //     {
-                        
-                //     }
-                // }
-                // event = 0;
-                // remove client from channels AND VECTOR when i try to login again donnot show already used or enregister
-            }
-            else if (fds[j].revents & POLLIN) 
+            if (fds[j].revents & POLLIN) 
             {
                 if (fds[j].fd == this->socket_fd) 
                 {
@@ -195,7 +158,7 @@ void Server::accept_socket(void) {
                         Message msg(client_fd);
                         this->clientMap[user_id] = msg;
                         user_id++;
-                        std::cout << "Client connected" << std::endl;
+                        std::cout << "Connection accepted, Client trying to connect..." << std::endl;
                     }
                 }
                 else {
@@ -203,12 +166,8 @@ void Server::accept_socket(void) {
                     char buffer[1024];
                     memset(buffer, 0, 1024);
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
-                    // bool is_ctrl_d = false;
-                    // bool is_ctrl_c = false;
-                    std::cout << "buuuuuufffff : " << buffer << std::endl;
                     if (bytes == 0) 
                     {
-                        // is_ctrl_c = true;
                         fds[j].events = 0;
                         std::vector<Client>::iterator it;
                         if(clients.size())
@@ -236,15 +195,9 @@ void Server::accept_socket(void) {
                                     _channels.erase(it1);
                             }
                         }
-                        // close(fds[j].fd);
+                        close(fds[j].fd);
                         std::cout << "client disconnect" << std::endl;
-                    } 
-                    // else if (buffer[bytes - 1] != (char)10) 
-                    // {
-                    //     is_ctrl_d = true;
-                    //     // create cash for the buffer
-                        
-                    // }
+                    }
                      if(bytes < 0)
                     {
                         fds_num--;
@@ -290,21 +243,16 @@ void Server::handel_message(char *buff, Message *user)
     }
     if(new_line == false)
     {
-        // newbuffer += buff;
         user->get_client().set_newbuffer(buff);
-        std::cout << "new buffer : " << user->get_client().get_newbuffer() << std::endl;
         return;
     }
     else
     {
-        // newbuffer += buff;
         user->get_client().set_newbuffer(buff);
         buffer = user->get_client().get_newbuffer();
-        std::cout << "buffer : " << buffer << std::endl;
         user->get_client().eraseBuffer();
     }
     std::string line = buffer;
-    std::cout << "line : " << line << std::endl;
     erase_charcter(line, '\n');
     erase_charcter(line, '\r');
     input = ft_split(line, ' ');
@@ -333,11 +281,3 @@ void Server::handel_message(char *buff, Message *user)
     }
 
 }
-
-// :nick1!~user@localhost JOIN :#random
-// :localhost 353 nick1 = #random :@nick1
-// :localhost 366 nick1 #random :End of /NAMES list
-
-// :nick1!~user@localhost  JOIN #random
-// :localhost 353 nick1 = #random :@nick1 
-// :localhost 366 nick1 #random :End of /NAMES list.

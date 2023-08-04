@@ -40,30 +40,10 @@ class Message
     Message();
     Message(int socket);
     ~Message();
-    std::string get_message();
-    std::string get_command();
-    std::string get_prefix();
     int get_socket();
     Client &get_client();
-    std::vector<std::string> get_params();
-    std::string get_trailing();
-    void set_message(std::string message);
-    void set_command(std::string command);
-    void set_prefix(std::string prefix);
-    void set_params(std::vector<std::string> params);
-    void set_trailing(std::string trailing);
     std::string parss_password(std::string password, std::string message, std::vector<Client> &clients);
-    bool isNicknameTaken(const std::vector<Client>& clients, const std::string& nickname);
-    // void print_message();
-    // void print_params();
-    // void print_prefix();
-    // void print_command();
-    // void print_trailing();
-    // void print_all();
-    void check_command(std::string message, std::string command, std::string password, int size);
-    void handleError(int error);
-    // void parss_topic(std::string buffer);
-    
+    bool isNicknameTaken(const std::vector<Client>& clients, const std::string& nickname);   
 };
 
 void    erase_charcter(std::string& str, char c);

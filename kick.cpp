@@ -65,8 +65,7 @@ std::string Server::kick(std::string input, Client &client)
                     }
                     else
                     {
-                        response = ":localhost (401) ERR_NOSUCHNICK" + nickname +  " :No such nick/channellll\r\n";
-                        // return response;
+                        response = ":localhost (401) ERR_NOSUCHNICK" + nickname +  " :No such nick/channel\r\n";
                     }
                 }
             }
@@ -77,8 +76,7 @@ std::string Server::kick(std::string input, Client &client)
         }
         else
         {
-            response = ":localhost (403) ERR_NOSUCHCHANNEL" + channel_name + " :No such channellll\r\n";
-            // return(response);
+            response = ":localhost (403) ERR_NOSUCHCHANNEL" + channel_name + " :No such channel\r\n";
         }
 
     }

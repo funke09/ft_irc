@@ -53,7 +53,6 @@ class Client
     void set_nick(std::string nick, bool nick_stat);
     void set_pass(bool pass_stat);
     void set_channel(std::string channel);
-    bool check_command(std::string Command);
     std::vector<std::string> get_channels();
     bool get_topicMode();
     void set_topicMode(bool topicMode);
@@ -64,11 +63,7 @@ class Client
     void set_newbuffer(std::string buffer);
     std::string get_newbuffer();
     void eraseBuffer();
-
 };
-bool operator==(const Client& lhs, const Client& rhs);
-
-std::ostream& operator<<(std::ostream& os, Client& client);
 
 #include "Message.hpp"
 

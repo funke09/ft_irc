@@ -88,15 +88,11 @@ class Channel {
 
         bool isInvited(std::string client);
         void setOperator(Client *client);
-        bool validateJoin(Client *client, std::string key);
         bool isBanned(std::string nick);
         ~Channel();
-
-        // std::string parss_topic(std::string buffer, Client &client);
         void broadcast_message(std::string message, int fd);
         bool isOnChannel(Client &client);
         bool is_member(int fd);
-        //void changeMode(Client* client, const std::string& modeChanges);
 };
 
 int isChannelInVector(const std::vector<Channel>& channels, const std::string& targetChannel);
