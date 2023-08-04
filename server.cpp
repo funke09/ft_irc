@@ -1,6 +1,8 @@
 #include "headerfile.hpp"
 #include "channel.hpp"
 
+std::string newbuffer;
+
 Server::Server(int port, std::string password)
 {
     this->port = port;
@@ -154,29 +156,9 @@ void Server::accept_socket(void) {
         }
         for (int j = 0; j < fds_num; j++) 
         {
-            if(fds[j].events & POLLHUP && !(fds[j].events & POLLIN))
+            if(fds[j].revents & POLLHUP  && !(fds[j].revents & POLLIN) ) // && !(fds[j].events & POLLIN)
             {
-                fds[j].events = 0;
-                std::vector<Client>::iterator it;
-                if(clients.size())
-                {
-                    for(it = clients.begin(); it < clients.end(); it++)
-                    {
-                        if(it->get_socket_client() == fds[j].fd)
-                        {
-                            // if(it->get_channels().size() >= 1)
-                            // {
-                            //     std::vector<std::string>::iterator chan;
-                            //     for (chan = it->get_channels().begin(); chan < it->get_channels().end(); chan++)
-                            //     {
-                            //         it->get_channels().erase(chan);
-                            //     }
-                            // }
-                            clients.erase(it);
-                        }
-                    }
-
-                }
+               
 
                 // if(_channels.size())
                 // {
@@ -217,21 +199,37 @@ void Server::accept_socket(void) {
                     }
                 }
                 else {
-                    // int clientfd = fds[j].fd;
                     flag = j - 1;
                     char buffer[1024];
                     memset(buffer, 0, 1024);
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
- 
-                    if (bytes == 0) {
+                    // bool is_ctrl_d = false;
+                    // bool is_ctrl_c = false;
+
+                    if (bytes == 0) 
+                    {
+                        // is_ctrl_c = true;
                         fds[j].events = 0;
-                        std::cout << "Ctrl-D pressed " << std::endl;
-                        std::string newbuffer(buffer);
-                        std::cout << "buffer : " << newbuffer << std::endl;
-                        // join the buffer and should not hung and should execute the command
-                        // waiting for char /r/n then join the buffer and should not hung and should execute the command 
-                    }
-                    else if(bytes < 0)
+                        std::vector<Client>::iterator it;
+                        if(clients.size())
+                        {
+                            for(it = clients.begin(); it < clients.end(); it++)
+                            {
+                                if(it->get_socket_client() == fds[j].fd) 
+                                    clients.erase(it);
+                            }
+
+                        }
+                        close(fds[j].fd);
+                        std::cout << "client disconnect" << std::endl;
+                    } 
+                    // else if (buffer[bytes - 1] != (char)10) 
+                    // {
+                    //     is_ctrl_d = true;
+                    //     // create cash for the buffer
+                        
+                    // }
+                     if(bytes < 0)
                     {
                         fds_num--;
                         close(fds[j].fd);
@@ -264,24 +262,47 @@ std::string toUpperCase(const std::string& str) {
 
 void Server::handel_message(char *buff, Message *user)
 {
-    std::string buffer(buff);
+    std::string buffer;
+    bool new_line = false;
     std::string response = "";
     std::vector<std::string> input;
-
-    erase_charcter(buffer, '\n');
-    erase_charcter(buffer, '\r');
-    input = ft_split(buffer, ' ');
-    response = user->parss_password(password, buffer, this->clients);
+    for(int i = 0; buff[i] != '\0'; i++)
+    {
+        if(buff[i] == '\n')
+        {
+            new_line = true;
+            break;
+        }
+    }
+    if(new_line == false)
+    {
+        newbuffer += buff;
+        std::cout << "new buffer : " << newbuffer << std::endl;
+        return;
+    }
+    else
+    {
+        newbuffer += buff;
+        buffer = newbuffer;
+        std::cout << "buffer : " << buffer << std::endl;
+        newbuffer.clear();
+    }
+    std::string line = buffer;
+    std::cout << "line : " << line << std::endl;
+    erase_charcter(line, '\n');
+    erase_charcter(line, '\r');
+    input = ft_split(line, ' ');
+    response = user->parss_password(password, line, this->clients);
     if(toUpperCase(input[0]) == "JOIN")
         response = joinChannel(input, user->get_client());
     else if(toUpperCase(input[0]) == "MODE")
         response = mode_response(input, user->get_client()); 
     else if(toUpperCase(input[0]) == "PRIVMSG")
-        response = privmsg(buffer, user->get_client());
+        response = privmsg(line, user->get_client());
     else if(toUpperCase(input[0]) == "TOPIC")
-        response = parss_topic(buffer, user->get_client());
+        response = parss_topic(line, user->get_client());
     else if(toUpperCase(input[0]) == "KICK")
-        response = kick(buffer, user->get_client());
+        response = kick(line, user->get_client());
     else if(toUpperCase(input[0]) == "INVITE")
         response = invite(input, user->get_client());
     else if(toUpperCase(input[0]) == "/BOT")
