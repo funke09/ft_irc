@@ -235,7 +235,7 @@ void Server::handel_message(char *buff, Message *user)
     bool new_line = false;
     std::string response = "";
     std::vector<std::string> input;
-    std::cout<<"buff :"<<buff<<std::endl;
+
     for(int i = 0; buff[i] != '\0'; i++)
     {
         if(buff[i] == '\n')
