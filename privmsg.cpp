@@ -54,14 +54,20 @@ std::string		Server::privmsg(std::string buff, Client &client)
 {
 	std::vector<std::string>	split;
 	std::vector<std::string>	recipient;
+    std::string response = "";
 
 	if(!client.get_isRegistred())
 		return (":localhost 451 * PRIVMSG :You must finish connecting with nickname first.\r\n");
+    
 	split_command(buff, split);
+    
 	if (split.size() == 1)
-		return (client.get_socket_client(), ":" + client.get_nickname() + " 461 PRIVMSG :Not enough parameters\r\n");
+    {
+        response = ":" + client.get_nickname() + " 411 * :No recipient given (PRIVMSG)\r\n";
+		send(findClientSocket(clients, client.get_nickname()), response.c_str(), response.size(), 0);
+    }
 	else if (split.size() == 2)
-		return (client.get_socket_client(), ":" + client.get_nickname() + " 412 PRIVMSG :No text to send\r\n");
+		return (":" + client.get_nickname() + " 412 PRIVMSG :No text to send\r\n");
 	else
 	{
 		recipient = ft_split(split[1], ',');
@@ -69,10 +75,11 @@ std::string		Server::privmsg(std::string buff, Client &client)
 		for(; it != recipient.end(); it++)
 		{
 			if (channelExists(this->_channels, *it) && this->_channels[getChannel(*it)].is_member(client.get_socket_client()))
-				this->_channels[getChannel(*it)].broadcast_message(":" + client.get_nickname() + " PRIVMSG " + *it + " :" + split[2] + "\r\n", client.get_socket_client());
+				this->_channels[getChannel(*it)].broadcast_message(":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.get_host() + " PRIVMSG " + *it + " :" + split[2] + "\r\n", client.get_socket_client());
 			else if (getclientFd(this->clients, *it) != 0)
 			{
-				std::string tmp = ":" + client.get_nickname() + " PRIVMSG " + *it + " :" + split[2] + "\r\n";
+                //:nick2!~lo@5c8c-aff4-7127-3c3-1c20.230.197.ip PRIVMSG nick1 :hellothere
+				std::string tmp = ":" + client.get_nickname() + "!~" + client.get_username() + "@" + client.get_host() + " PRIVMSG " + *it + " :" + split[2] + "\r\n";
 				send(findClientSocket(this->clients, *it), tmp.c_str(), tmp.size(), 0);
 			}
 			else

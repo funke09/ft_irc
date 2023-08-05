@@ -44,8 +44,8 @@ std::string Server::kick(std::string input, Client &client)
         nickname = tokens[2];
         if(tokens.size() >= 4)
         {
-            for (size_t i = 4 ; i < tokens.size() ; i++)
-                reason += tokens[i] + " ";
+            for (size_t i = 3 ; i < tokens.size() ; i++)
+                reason = reason + tokens[i] + " ";
         }
         else
             reason = "";
