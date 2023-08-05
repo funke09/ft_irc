@@ -35,27 +35,29 @@ std::string Server::kick(std::string input, Client &client)
             start = end + 1;
         }
         tokens.push_back(input.substr(start));
+        if(tokens.size() <= 2)
+        {
+            response = ":localhost 461 ERR_NEEDMOREPARAMS :KICK not enough parameters\r\n";   
+            return(response);
+        }
         channel_name = tokens[1];
         nickname = tokens[2];
         if(tokens.size() >= 4)
         {
             for (size_t i = 4 ; i < tokens.size() ; i++)
-                reason = reason + tokens[i] + " ";
+                reason += tokens[i] + " ";
         }
         else
             reason = "";
         if(channelExists(this->_channels, channel_name))
         {
             if(!this->_channels[getChannel(channel_name)].is_moderator(client.get_socket_client()))
-            {
-                response = ":localhost (482) ERR_CHANOPRIVSNEEDED " + client.get_nickname() + " :You're not channel operator\r\n";
-                // return(response);
-            }
+                response = ":localhost 482 ERR_CHANOPRIVSNEEDED " + client.get_nickname() + " :You're not channel operator\r\n";
             else if(isOnChannel(this->_channels[getChannel(channel_name)], client.get_socket_client()))
             {
                 to_kick = verify_to_kick(nickname, this->clients);
                 if (this->_channels[getChannel(channel_name)].is_moderator(to_kick))
-                    response = ":localhost (512) ERR_CANNOT_KICK_SELF " + nickname + " :You can't kick yourself\r\n";
+                    response = ":localhost 512 ERR_CANNOT_KICK_SELF " + nickname + " :You can't kick yourself\r\n";
                 else if(to_kick != -1)
                 {
                     if(this->_channels[getChannel(channel_name)].is_member(to_kick))
@@ -70,22 +72,15 @@ std::string Server::kick(std::string input, Client &client)
                     }
                     else
                     {
-                        response = ":localhost (401) ERR_NOSUCHNICK" + nickname +  " :No such nick/channel\r\n";
+                        response = ":localhost 401 ERR_NOSUCHNICK " + nickname +  " :No such nick/channel\r\n";
                     }
                 }
             }
             else
-            {
-                response = ":localhost (441) ERR_USERNOTINCHANNEL " + nickname + " " + channel_name + " :They aren't on that channel\r\n";
-            }
+                response = ":localhost 441 ERR_USERNOTINCHANNEL " + nickname + " " + channel_name + " :They aren't on that channel\r\n";
         }
         else
-        {
-            response = ":localhost (403) ERR_NOSUCHCHANNEL" + channel_name + " :No such channel\r\n";
-        }
-
+            response = ":localhost 403 ERR_NOSUCHCHANNEL " + channel_name + " :No such channel\r\n";
     }
-    else
-        response = ":localhost (461) ERR_NEEDMOREPARAMS :Not enough parameters\r\n";
     return(response);
 }

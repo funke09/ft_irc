@@ -166,7 +166,7 @@ void Server::accept_socket(void) {
                     char buffer[1024];
                     memset(buffer, 0, 1024);
                     int bytes = recv(fds[j].fd, buffer, 1024, 0);
-                    if (bytes == 0) 
+                    if (bytes == 0 || !strcmp(buffer, "QUIT\r\n") || !strcmp(buffer, "QUIT\n")) 
                     {
                         fds[j].events = 0;
                         std::vector<Client>::iterator it;
