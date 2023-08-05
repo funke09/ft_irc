@@ -38,7 +38,7 @@ class Message
 
     public:
     Message();
-    Message(int socket);
+    Message(int socket, std::string hostname);
     ~Message();
     int get_socket();
     Client &get_client();

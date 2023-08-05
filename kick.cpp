@@ -35,11 +35,13 @@ std::string Server::kick(std::string input, Client &client)
             start = end + 1;
         }
         tokens.push_back(input.substr(start));
+        if (tokens.size() < 2)
+            response = ":localhost (461) ERR_NEEDMOREPARAMS :KICK not enough parameters\r\n";
         channel_name = tokens[1];
         nickname = tokens[2];
         if(tokens.size() >= 4)
         {
-            for (size_t i = 4 ; i < tokens.size() ; i++)
+            for (size_t i = 3 ; i < tokens.size() ; i++)
                 reason = reason + tokens[i] + " ";
         }
         else
@@ -85,7 +87,6 @@ std::string Server::kick(std::string input, Client &client)
         }
 
     }
-    else
-        response = ":localhost (461) ERR_NEEDMOREPARAMS :Not enough parameters\r\n";
+
     return(response);
 }

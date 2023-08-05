@@ -5,11 +5,11 @@ Message::Message()
 }
 
 
-Message::Message(int socket)
+Message::Message(int socket, std::string hostname)
 {
     this->socket = socket;
     is_authenticated = false;
-    this->client = Client(socket);
+    this->client = Client(socket, hostname);
 }
 
 Message::~Message()

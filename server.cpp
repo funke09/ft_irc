@@ -2,7 +2,6 @@
 #include "channel.hpp"
 
 
-
 Server::Server(int port, std::string password)
 {
     this->port = port;
@@ -145,7 +144,10 @@ void Server::accept_socket(void) {
                         return;
                     }
                     fcntl(client_fd, F_SETFL, O_NONBLOCK);
-
+                    struct hostent *host = gethostbyaddr(&serverAddress.sin_addr, serverAddress.sin_len, AF_INET);
+                    std::string hostname = "localhost";
+                    if (host)
+                        hostname = std::string(host->h_name);
                     // Check if maximum number of clients reached
                     if (fds_num == MAX_CLIENTS) {
                         std::cout << "Maximum number of clients reached" << std::endl;
@@ -155,7 +157,7 @@ void Server::accept_socket(void) {
                         fds[fds_num].fd = client_fd;
                         fds[fds_num].events = POLLIN;
                         fds_num++;
-                        Message msg(client_fd);
+                        Message msg(client_fd, hostname);
                         this->clientMap[user_id] = msg;
                         user_id++;
                         std::cout << "Connection accepted, Client trying to connect..." << std::endl;
@@ -233,6 +235,7 @@ void Server::handel_message(char *buff, Message *user)
     bool new_line = false;
     std::string response = "";
     std::vector<std::string> input;
+    std::cout<<"buff :"<<buff<<std::endl;
     for(int i = 0; buff[i] != '\0'; i++)
     {
         if(buff[i] == '\n')
@@ -262,7 +265,7 @@ void Server::handel_message(char *buff, Message *user)
     else if(toUpperCase(input[0]) == "MODE")
         response = mode_response(input, user->get_client()); 
     else if(toUpperCase(input[0]) == "PRIVMSG")
-        response = privmsg(line, user->get_client());
+            response = privmsg(line, user->get_client());
     else if(toUpperCase(input[0]) == "TOPIC")
         response = parss_topic(line, user->get_client());
     else if(toUpperCase(input[0]) == "KICK")

@@ -24,6 +24,8 @@ int getclientFd(std::vector<Client> clients, std::string nickname)
 
 std::string	Server::invite(std::vector<std::string> input, Client &client)
 {
+	if(input.size() < 3)
+		return(":localhost 461 " + client.get_nickname() + " INVITE :Not enough parameters\r\n");
 	int index = isChannelInVector(this->_channels, input[2]);
 	if (index == -1)
 		return (":localhost 403 " + client.get_nickname() + " " + input[2] + " :No such channel\r\n");
@@ -34,8 +36,7 @@ std::string	Server::invite(std::vector<std::string> input, Client &client)
 
 	if(!client.get_isRegistred())
 		return (":localhost 451 * MODE :You must finish connecting with nickname first.\r\n");
-	if(input.size() < 3)
-		return(":localhost 461 " + client.get_nickname() + " INVITE :Not enough parameters\r\n");
+	
 	if (getclientFd(this->clients, input[1]) == 0)
 		return (":localhost 401 " + client.get_nickname() + " " + input[1] + " :No such nick/channel\r\n");
 	if(chan.getInvitedMode() && !chan_inVect(chan.getModerators(), client.get_socket_client()))
