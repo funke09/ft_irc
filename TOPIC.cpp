@@ -48,7 +48,10 @@ std::string Server::parss_topic(std::string buffer, Client &client) {
 		channel_name = split[1].substr(1); // Remove '#' from the channel name
 		if (topicStart != std::string::npos) {
 			// Extract the topic from the buffer
-		   	topic = buffer.substr(topicStart + 1);
+			if (buffer[topicStart + 1] == ':')
+		   		topic = buffer.substr(topicStart + 2);
+			else
+		   		topic = buffer.substr(topicStart + 1);
 		   	if(topic.empty())
 		   		topic = "";
 			channel.setTopic(topic);
